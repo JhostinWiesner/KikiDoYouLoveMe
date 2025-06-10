@@ -51,9 +51,9 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     private AnimationTimer animationTimer;
 
     // Variables para navegación de cámara
-    private double camaraX = 0;
-    private double camaraY = 0;
-    private final double VELOCIDAD_CAMARA = 5.0;
+    private double camaraX = 412.5;
+    private double camaraY = 412.5;
+    private final double VELOCIDAD_CAMARA = 7.0;
 
     // Teclas presionadas
     private boolean teclaW = false;
@@ -238,8 +238,8 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
 //        camaraY = Math.max(0, Math.min(camaraY, 1000 - canvasMapa.getHeight()));
 
 
-        double maxX = 1000 * 1.5 - canvasMapa.getWidth(); // Ajustar según la escala
-        double maxY = 1000 * 1.5 - canvasMapa.getHeight(); // Ajustar según la escala
+        double maxX = 1000 * 1.6 - canvasMapa.getWidth(); // Ajustar según la escala
+        double maxY = 1000 * 1.6 - canvasMapa.getHeight(); // Ajustar según la escala
 
         camaraX = Math.max(0, Math.min(camaraX, maxX));
         camaraY = Math.max(0, Math.min(camaraY, maxY));
@@ -546,14 +546,9 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // Aplicar transformación de cámara
         gc.save();
 
-        // Aplicar el zoom (escala). Esto hace que todo se dibuje más pequeño.
-        double escala = 1.5; // Puedes ajustar este valor para hacer el mapa más grande (0.5 es un 50% del tamaño original)
+        double escala = 1.6; // Puedes ajustar este valor para hacer el mapa más grande (0.5 es un 50% del tamaño original)
         gc.scale(escala, escala); // Aplica el zoom
-
-        // Aplicar la transformación de la cámara con el nuevo zoom
         gc.translate(-camaraX / escala, -camaraY / escala); // Ajuste de cámara para que se mueva correctamente con el zoom
-
-        //gc.translate(-camaraX, -camaraY);
 
         // Renderizar fondo del mapa
         renderizarFondoMapa();
