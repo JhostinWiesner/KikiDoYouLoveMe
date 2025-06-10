@@ -15,6 +15,7 @@ import org.example.tareaintegradora2apo.model.vehiculos.*;
 //import org.example.tareaintegradora2apo.model.vehiculos.;
 import org.example.tareaintegradora2apo.model.incidentes.Incendio;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -76,7 +77,7 @@ public class SimuladorSGMMS {
     /**
      * Constructor para la clase SimuladorSGMMS
      */
-    public SimuladorSGMMS() {
+    public SimuladorSGMMS() throws IOException {
         // Inicializar estructuras de datos con sus comparadores específicos
         this.bstIncidentes = new BST<>(new ComparatorIncidente());
         this.bstRutas = new BST<>(new ComparatorRuta());

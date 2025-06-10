@@ -27,8 +27,8 @@ public class Grafo {
      * @param posicion Posición del nodo en el mapa
      * @return Nodo creado
      */
-    public MapNodo agregarNodo(String id, Point2D posicion) {
-        MapNodo nodo = new MapNodo(id, posicion);
+    public MapNodo agregarNodo(String id, Point2D posicion,boolean tieneSemaforo) {
+        MapNodo nodo = new MapNodo(id, posicion,tieneSemaforo);
         nodos.put(id, nodo);
         return nodo;
     }
@@ -39,11 +39,9 @@ public class Grafo {
      * @param idOrigen ID del nodo origen
      * @param idDestino ID del nodo destino
      * @param peso Peso de la arista (distancia o tiempo)
-     * @param tipoVia Tipo de vía (principal, secundaria, residencial)
-     * @param velocidadMaxima Velocidad máxima permitida en la vía
      * @return Arista creada
      */
-    public MapArista agregarArista(String id, String idOrigen, String idDestino, double peso, String tipoVia, double velocidadMaxima) {
+    public MapArista agregarArista(String id, String idOrigen, String idDestino, double peso) {
         MapNodo origen = nodos.get(idOrigen);
         MapNodo destino = nodos.get(idDestino);
 
@@ -51,9 +49,11 @@ public class Grafo {
             throw new IllegalArgumentException("Los nodos origen y destino deben existir");
         }
 
-        MapArista arista = new MapArista(id, origen, destino, peso, tipoVia, velocidadMaxima);
+        MapArista arista = new MapArista(id, origen, destino, peso);
         aristas.add(arista);
         origen.agregarAristaAdyacente(arista);
+        destino.agregarAristaAdyacente(arista);
+
 
         return arista;
     }

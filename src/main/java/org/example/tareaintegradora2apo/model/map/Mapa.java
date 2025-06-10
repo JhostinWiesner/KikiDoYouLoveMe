@@ -4,6 +4,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +25,7 @@ public class Mapa {
     private List<Point2D> puntosEntrada;
     private List<Point2D> puntosSalida;
     private Map<String, Point2D> edificiosServicio;
+
     /**
      * Constructor para la clase Mapa
      *
@@ -42,174 +47,64 @@ public class Mapa {
         zonas.put("vias_principales", new ArrayList<>());
     }
 
-    /**
-     * Inicializa el grafo del mapa con nodos y aristas
-     */
-    public void inicializarGrafo() {
-        // Este método se implementará con las coordenadas específicas del mapa de Palmira
-        // Aquí se definirán los nodos (intersecciones) y aristas (calles) del grafo
-
-        // Ejemplo de inicialización básica
-        // Crear nodos en intersecciones clave
-        MapNodo n1 = grafo.agregarNodo("n1", new Point2D(100, 100));
-        MapNodo n2 = grafo.agregarNodo("n2", new Point2D(200, 100));
-        MapNodo n3 = grafo.agregarNodo("n3", new Point2D(100, 200));
-        MapNodo n4 = grafo.agregarNodo("n4", new Point2D(200, 200));
-
-        // Crear aristas (calles) entre nodos
-        grafo.agregarArista("a1", "n1", "n2", 100, "principal", 60);
-        grafo.agregarArista("a2", "n1", "n3", 100, "secundaria", 40);
-        grafo.agregarArista("a3", "n2", "n4", 100, "principal", 60);
-        grafo.agregarArista("a4", "n3", "n4", 100, "secundaria", 40);
-
-        // Marcar nodos con semáforos
-        n1.setTieneSemaforo(true);
-        n4.setTieneSemaforo(true);
-
-        // Agregar semáforos en intersecciones clave
-        semaforos.add(new Semaforo("s1", n1.getPosicion()));
-        semaforos.add(new Semaforo("s2", n4.getPosicion()));
-
-        // Definir puntos de entrada y salida
-        puntosEntrada.add(new Point2D(50, 100));
-        puntosEntrada.add(new Point2D(100, 50));
-        puntosSalida.add(new Point2D(250, 200));
-        puntosSalida.add(new Point2D(200, 250));
-
-        // Definir zonas
-        List<Point2D> zonaResidencial = zonas.get("residencial");
-        zonaResidencial.add(new Point2D(50, 50));
-        zonaResidencial.add(new Point2D(150, 50));
-        zonaResidencial.add(new Point2D(150, 150));
-        zonaResidencial.add(new Point2D(50, 150));
-
-        List<Point2D> zonaComercial = zonas.get("comercial");
-        zonaComercial.add(new Point2D(150, 150));
-        zonaComercial.add(new Point2D(250, 150));
-        zonaComercial.add(new Point2D(250, 250));
-        zonaComercial.add(new Point2D(150, 250));
-    }
 
     /**
      * Inicializa el grafo del mapa basado en la imagen proporcionada de Palmira
      */
-    public void inicializarGrafoPalmira() {
+    public void inicializarGrafoPalmira() throws IOException {
         // Limpiar datos existentes
         grafo = new Grafo();
         semaforos.clear();
         puntosEntrada.clear();
         puntosSalida.clear();
-
-        // Inicializar zonas si no existen
-        if (!zonas.containsKey("residencial")) {
-            zonas.put("residencial", new ArrayList<>());
-        }
-        if (!zonas.containsKey("comercial")) {
-            zonas.put("comercial", new ArrayList<>());
-        }
-        if (!zonas.containsKey("vias_principales")) {
-            zonas.put("vias_principales", new ArrayList<>());
-        }
-        if (!zonas.containsKey("industrial")) {
-            zonas.put("industrial", new ArrayList<>());
-        }
-
-        // Crear nodos en intersecciones principales (grid 10x10)
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                double x = 50 + i * 100;
-                double y = 50 + j * 100;
-                grafo.agregarNodo("n_" + i + "_" + j, new Point2D(x, y));
-            }
-        }
-
-        // Crear aristas (calles) entre nodos adyacentes
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                // Aristas horizontales
-                if (i < 9) {
-                    String tipoVia = (i % 3 == 0) ? "principal" : "secundaria";
-                    double velocidad = (i % 3 == 0) ? 60 : 40;
-                    grafo.agregarArista("a_h_" + i + "_" + j, "n_" + i + "_" + j, "n_" + (i + 1) + "_" + j, 100, tipoVia, velocidad);
-                }
-
-                // Aristas verticales
-                if (j < 9) {
-                    String tipoVia = (j % 3 == 0) ? "principal" : "secundaria";
-                    double velocidad = (j % 3 == 0) ? 60 : 40;
-                    grafo.agregarArista("a_v_" + i + "_" + j, "n_" + i + "_" + j, "n_" + i + "_" + (j + 1), 100, tipoVia, velocidad);
-                }
-            }
-        }
-
-        // Definir puntos de entrada y salida
-        puntosEntrada.add(new Point2D(0, 150));    // Entrada oeste
-        puntosEntrada.add(new Point2D(150, 0));    // Entrada norte
-        puntosEntrada.add(new Point2D(950, 150));  // Entrada este
-        puntosEntrada.add(new Point2D(150, 950));  // Entrada sur
-
-        puntosSalida.add(new Point2D(0, 850));     // Salida oeste
-        puntosSalida.add(new Point2D(850, 0));     // Salida norte
-        puntosSalida.add(new Point2D(950, 850));   // Salida este
-        puntosSalida.add(new Point2D(850, 950));   // Salida sur
-
-        // Definir zonas
-
-        // Zona residencial (esquina superior izquierda)
-        List<Point2D> zonaResidencial = zonas.get("residencial");
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                zonaResidencial.add(new Point2D(100 + i * 100, 100 + j * 100));
-            }
-        }
-
-        // Zona comercial (centro del mapa)
-        List<Point2D> zonaComercial = zonas.get("comercial");
-        for (int i = 4; i < 7; i++) {
-            for (int j = 4; j < 7; j++) {
-                zonaComercial.add(new Point2D(50 + i * 100, 50 + j * 100));
-            }
-        }
-
-        // Zona industrial (esquina inferior derecha)
-        List<Point2D> zonaIndustrial = zonas.get("industrial");
-        for (int i = 7; i < 10; i++) {
-            for (int j = 7; j < 10; j++) {
-                zonaIndustrial.add(new Point2D(50 + i * 100, 50 + j * 100));
-            }
-        }
-
-        // Vías principales (cada 3 líneas)
-        List<Point2D> viasPrincipales = zonas.get("vias_principales");
-        for (int i = 0; i < 10; i++) {
-            if (i % 3 == 0) {
-                // Vías horizontales principales
-                for (int j = 0; j < 10; j++) {
-                    viasPrincipales.add(new Point2D(50 + i * 100, 50 + j * 100));
-                }
-            }
-        }
-        for (int j = 0; j < 10; j++) {
-            if (j % 3 == 0) {
-                // Vías verticales principales
-                for (int i = 0; i < 10; i++) {
-                    viasPrincipales.add(new Point2D(50 + i * 100, 50 + j * 100));
-                }
-            }
-        }
-
+        cargarNodos("map/nodos.csv");
+        cargarAristas("map/aristas.csv");
         // Crear semáforos en intersecciones principales (evitando edificios)
         crearSemaforosEnIntersecciones();
 
         // Definir edificios de servicio
         definirEdificiosServicio();
 
-        System.out.println("Mapa de Palmira inicializado:");
-        System.out.println("- Nodos: " + grafo.getNodos().size());
-        System.out.println("- Aristas: " + grafo.getAristas().size());
-        System.out.println("- Semáforos: " + semaforos.size());
-        System.out.println("- Puntos de entrada: " + puntosEntrada.size());
-        System.out.println("- Puntos de salida: " + puntosSalida.size());
+
+    }
+
+    public void cargarNodos(String pathNodos) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/"+pathNodos)))) {
+            String linea = reader.readLine(); // Encabezado
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split(";");
+                String id = partes[0].trim();
+                double x = Double.parseDouble(partes[1].trim());
+                double y = Double.parseDouble(partes[2].trim());
+                boolean tieneSemaforo = Boolean.parseBoolean(partes[3].trim());
+                boolean puntosClave = Boolean.parseBoolean(partes[4].trim());
+                if (puntosClave){
+                    puntosEntrada.add(new Point2D(x, y));
+                    puntosSalida.add(new Point2D(x, y));
+                }
+
+                grafo.agregarNodo(id, new Point2D(x, y), tieneSemaforo);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void cargarAristas(String pathAristas) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/"+pathAristas)))) {
+            String linea = reader.readLine(); // Encabezado
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split(";");
+                String id = partes[0].trim();
+                String idOrigen = partes[1].trim();
+                String idDestino = partes[2].trim();
+                double peso = Double.parseDouble(partes[3].trim());
+                grafo.agregarArista(id, idOrigen, idDestino, peso);
+
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -431,11 +326,13 @@ public class Mapa {
 
     /**
      * Obtiene el mapa de edificios de servicio
+     *
      * @return Mapa con las ubicaciones de los edificios de servicio
      */
     public Map<String, Point2D> getEdificiosServicio() {
         return edificiosServicio;
     }
+
 
     // Getters
 

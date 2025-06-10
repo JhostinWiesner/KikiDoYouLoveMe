@@ -14,9 +14,10 @@ public class MapNodo {
     private List<MapArista> aristasAdyacentes;
     private boolean tieneSemaforo;
 
-    public MapNodo(String id, Point2D posicion) {
+    public MapNodo(String id, Point2D posicion, boolean tieneSemaforo) {
         this.id = id;
         this.posicion = posicion;
+        this.tieneSemaforo = tieneSemaforo;
         this.aristasAdyacentes = new ArrayList<>();
         this.tieneSemaforo = false;
     }
