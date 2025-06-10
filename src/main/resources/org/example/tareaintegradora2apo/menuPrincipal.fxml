@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.tareaintegradora2apo.controller.MenuPrincipalController">
+   <center>
+      <VBox alignment="CENTER" spacing="30.0" style="-fx-background-color: linear-gradient(to bottom, #2c3e50, #34495e);">
+         <children>
+            <!-- Título Principal -->
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Label style="-fx-text-fill: white;" text="Sistema de Gestión y Monitoreo">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label style="-fx-text-fill: white;" text="de Movilidad y Seguridad">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label style="-fx-text-fill: #ecf0f1;" text="Palmira Bay">
+                     <font>
+                        <Font name="System Italic" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            
+            <!-- Botones del Menú -->
+            <VBox alignment="CENTER" spacing="20.0">
+               <children>
+                  <Button fx:id="btnJugar" maxWidth="300.0" minWidth="300.0" prefHeight="60.0" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 10;" text="INICIAR SIMULACIÓN" textAlignment="CENTER">
+                     <effect>
+                        <javafx.scene.effect.DropShadow color="#000000" radius="5.0" />
+                     </effect>
+                  </Button>
+                  
+                  <Button fx:id="btnManual" maxWidth="300.0" minWidth="300.0" prefHeight="60.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 10;" text="MANUAL DEL USUARIO">
+                     <effect>
+                        <javafx.scene.effect.DropShadow color="#000000" radius="5.0" />
+                     </effect>
+                  </Button>
+                  
+                  <Button fx:id="btnSalir" maxWidth="300.0" minWidth="300.0" prefHeight="60.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 10;" text="SALIR">
+                     <effect>
+                        <javafx.scene.effect.DropShadow color="#000000" radius="5.0" />
+                     </effect>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <!-- Información adicional -->
+            <VBox alignment="CENTER" spacing="5.0">
+               <children>
+                  <Label style="-fx-text-fill: #bdc3c7;" text="Simulador de Emergencias">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label style="-fx-text-fill: #bdc3c7;" text="Universidad Icesi">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>
