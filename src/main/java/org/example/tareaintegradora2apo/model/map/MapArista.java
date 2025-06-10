@@ -8,16 +8,13 @@ public class MapArista {
     private MapNodo origen;
     private MapNodo destino;
     private double peso; // Distancia o tiempo
-    private String tipoVia; // Principal, secundaria, residencial
-    private double velocidadMaxima;
 
-    public MapArista(String id, MapNodo origen, MapNodo destino, double peso, String tipoVia, double velocidadMaxima) {
+
+    public MapArista(String id, MapNodo origen, MapNodo destino, double peso) {
         this.id = id;
         this.origen = origen;
         this.destino = destino;
         this.peso = peso;
-        this.tipoVia = tipoVia;
-        this.velocidadMaxima = velocidadMaxima;
     }
 
     public String getId() {
@@ -36,11 +33,4 @@ public class MapArista {
         return peso;
     }
 
-    public String getTipoVia() {
-        return tipoVia;
-    }
-
-    public double getVelocidadMaxima() {
-        return velocidadMaxima;
-    }
 }

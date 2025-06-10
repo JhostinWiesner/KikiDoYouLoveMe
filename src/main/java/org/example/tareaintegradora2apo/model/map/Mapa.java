@@ -57,10 +57,10 @@ public class Mapa {
         MapNodo n4 = grafo.agregarNodo("n4", new Point2D(200, 200));
 
         // Crear aristas (calles) entre nodos
-        grafo.agregarArista("a1", "n1", "n2", 100, "principal", 60);
-        grafo.agregarArista("a2", "n1", "n3", 100, "secundaria", 40);
-        grafo.agregarArista("a3", "n2", "n4", 100, "principal", 60);
-        grafo.agregarArista("a4", "n3", "n4", 100, "secundaria", 40);
+        grafo.agregarArista("a1", "n1", "n2", 100);
+        grafo.agregarArista("a2", "n1", "n3", 100);
+        grafo.agregarArista("a3", "n2", "n4", 100);
+        grafo.agregarArista("a4", "n3", "n4", 100);
 
         // Marcar nodos con semáforos
         n1.setTieneSemaforo(true);
@@ -130,14 +130,14 @@ public class Mapa {
                 if (i < 9) {
                     String tipoVia = (i % 3 == 0) ? "principal" : "secundaria";
                     double velocidad = (i % 3 == 0) ? 60 : 40;
-                    grafo.agregarArista("a_h_" + i + "_" + j, "n_" + i + "_" + j, "n_" + (i + 1) + "_" + j, 100, tipoVia, velocidad);
+                    grafo.agregarArista("a_h_" + i + "_" + j, "n_" + i + "_" + j, "n_" + (i + 1) + "_" + j, 100);
                 }
 
                 // Aristas verticales
                 if (j < 9) {
                     String tipoVia = (j % 3 == 0) ? "principal" : "secundaria";
                     double velocidad = (j % 3 == 0) ? 60 : 40;
-                    grafo.agregarArista("a_v_" + i + "_" + j, "n_" + i + "_" + j, "n_" + i + "_" + (j + 1), 100, tipoVia, velocidad);
+                    grafo.agregarArista("a_v_" + i + "_" + j, "n_" + i + "_" + j, "n_" + i + "_" + (j + 1), 100);
                 }
             }
         }

@@ -186,7 +186,7 @@ public class SimuladorSGMMS {
         String[] tipos = {"Sedan", "SUV", "Camión", "Motocicleta"};
         String tipo = tipos[new Random().nextInt(tipos.length)];
 
-        VehiculoCivil vehiculo = new VehiculoCivil("C" + (++contadorVehiculos), posicion, tipo);
+        VehiculoCivil vehiculo = new VehiculoCivil("C" + (++contadorVehiculos), posicion);
         vehiculosCiviles.add(vehiculo);
 
         // Asignar ruta aleatoria
