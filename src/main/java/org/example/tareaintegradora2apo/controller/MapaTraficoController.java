@@ -553,9 +553,6 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // Renderizar fondo del mapa
         renderizarFondoMapa();
 
-        // NO renderizar grafo de calles (eliminado)
-        // renderizarGrafoCalles(); - ELIMINADO
-
         // Renderizar semáforos
         renderizarSemaforos();
 

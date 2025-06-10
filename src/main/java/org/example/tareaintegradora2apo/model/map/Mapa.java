@@ -5,7 +5,6 @@ import javafx.scene.image.Image;
 import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -326,13 +325,11 @@ public class Mapa {
 
     /**
      * Obtiene el mapa de edificios de servicio
-     *
      * @return Mapa con las ubicaciones de los edificios de servicio
      */
     public Map<String, Point2D> getEdificiosServicio() {
         return edificiosServicio;
     }
-
 
     // Getters
 

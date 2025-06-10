@@ -1,6 +1,7 @@
 package org.example.tareaintegradora2apo.model.vehiculos;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 import org.example.tareaintegradora2apo.model.map.Grafo;
 import org.example.tareaintegradora2apo.model.map.MapNodo;
 import org.example.tareaintegradora2apo.model.trafico.Ruta;
@@ -13,9 +14,9 @@ import java.util.Random;
  * Clase que representa un vehículo civil en el sistema SGMMS.
  * Estos vehículos se mueven autónomamente por el mapa.
  */
-public class VehiculoCivil extends Vehiculo {
-    
-    private String tipo; // Sedan, SUV, Camión, etc.
+public class VehiculoCivil extends Vehiculo implements Runnable {
+
+    private Image actualImage;
     private double probabilidadViolacion; // Probabilidad de violar un semáforo
     private Random random;
     
@@ -23,11 +24,9 @@ public class VehiculoCivil extends Vehiculo {
      * Constructor para la clase VehiculoCivil
      * @param id Identificador único del vehículo
      * @param posicionInicial Posición inicial en el mapa
-     * @param tipo Tipo de vehículo civil
      */
-    public VehiculoCivil(String id, Point2D posicionInicial, String tipo) {
+    public VehiculoCivil(String id, Point2D posicionInicial) {
         super(id, posicionInicial, 1.0 + Math.random()); // Velocidad aleatoria entre 1.0 y 2.0
-        this.tipo = tipo;
         this.probabilidadViolacion = 0.05 + Math.random() * 0.15; // Entre 5% y 20%
         this.random = new Random();
         this.prioridad = 1.0; // Prioridad baja
@@ -76,14 +75,6 @@ public class VehiculoCivil extends Vehiculo {
         // Calcular ruta
         Ruta ruta = grafo.calcularRuta(origen.getPosicion(), destino.getPosicion());
         asignarRuta(ruta);
-    }
-    
-    /**
-     * Obtiene el tipo de vehículo civil
-     * @return Tipo de vehículo
-     */
-    public String getTipo() {
-        return tipo;
     }
     
     /**

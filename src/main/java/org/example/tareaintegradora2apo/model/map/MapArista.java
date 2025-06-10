@@ -10,7 +10,6 @@ public class MapArista {
     private double peso; // Distancia o tiempo
 
 
-
     public MapArista(String id, MapNodo origen, MapNodo destino, double peso) {
         this.id = id;
         this.origen = origen;
@@ -33,6 +32,5 @@ public class MapArista {
     public double getPeso() {
         return peso;
     }
-
 
 }
