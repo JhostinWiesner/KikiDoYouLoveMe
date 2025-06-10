@@ -51,9 +51,9 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     private AnimationTimer animationTimer;
 
     // Variables para navegación de cámara
-    private double camaraX = 0;
-    private double camaraY = 0;
-    private final double VELOCIDAD_CAMARA = 5.0;
+    private double camaraX = 412.5;
+    private double camaraY = 412.5;
+    private final double VELOCIDAD_CAMARA = 7.0;
 
     // Teclas presionadas
     private boolean teclaW = false;
@@ -233,13 +233,9 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         if (teclaA) camaraX -= VELOCIDAD_CAMARA;
         if (teclaD) camaraX += VELOCIDAD_CAMARA;
 
-        // Limitar la cámara dentro del mapa
-//        camaraX = Math.max(0, Math.min(camaraX, 1000 - canvasMapa.getWidth()));
-//        camaraY = Math.max(0, Math.min(camaraY, 1000 - canvasMapa.getHeight()));
 
-
-        double maxX = 1000 * 1.5 - canvasMapa.getWidth(); // Ajustar según la escala
-        double maxY = 1000 * 1.5 - canvasMapa.getHeight(); // Ajustar según la escala
+        double maxX = 1000 * 1.65 - canvasMapa.getWidth(); // Ajustar según la escala
+        double maxY = 1000 * 1.65 - canvasMapa.getHeight(); // Ajustar según la escala
 
         camaraX = Math.max(0, Math.min(camaraX, maxX));
         camaraY = Math.max(0, Math.min(camaraY, maxY));
@@ -296,7 +292,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
 
             // Mensaje indicando que no hay imagen
             gc.setFill(Color.BLACK);
-            gc.fillText("Mapa de Palmira (Sin imagen de fondo)", 400, 500);
+            gc.fillText("Mapa", 400, 500);
         }
     }
 
@@ -539,21 +535,15 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         if (simulador == null) {
             return;
         }
-
         // Limpiar canvas
         gc.clearRect(0, 0, canvasMapa.getWidth(), canvasMapa.getHeight());
 
         // Aplicar transformación de cámara
         gc.save();
 
-        // Aplicar el zoom (escala). Esto hace que todo se dibuje más pequeño.
-        double escala = 1.5; // Puedes ajustar este valor para hacer el mapa más grande (0.5 es un 50% del tamaño original)
+        double escala = 1.65; // Puedes ajustar este valor para hacer el mapa más grande (0.5 es un 50% del tamaño original)
         gc.scale(escala, escala); // Aplica el zoom
-
-        // Aplicar la transformación de la cámara con el nuevo zoom
-        gc.translate(-camaraX / escala, -camaraY / escala); // Ajuste de cámara para que se mueva correctamente con el zoom
-
-        //gc.translate(-camaraX, -camaraY);
+        gc.translate(-camaraX / escala, -camaraY / escala);
 
         // Renderizar fondo del mapa
         renderizarFondoMapa();
