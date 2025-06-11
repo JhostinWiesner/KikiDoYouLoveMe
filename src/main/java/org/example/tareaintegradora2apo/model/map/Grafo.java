@@ -157,7 +157,7 @@ public class Grafo {
         if (!predecesores.containsKey(nodoFin)) {
             puntos.add(inicio);
             puntos.add(fin);
-            return new Ruta("ruta_directa", puntos);
+            return new Ruta("ruta_directa", puntos, this);
         }
 
         // Reconstruir la ruta desde el fin hasta el inicio
@@ -170,7 +170,7 @@ public class Grafo {
         puntos.add(0, inicio);
         puntos.add(fin);
 
-        return new Ruta("ruta_" + System.currentTimeMillis(), puntos);
+        return new Ruta("ruta_" + System.currentTimeMillis(), puntos, this);
     }
 
     /**

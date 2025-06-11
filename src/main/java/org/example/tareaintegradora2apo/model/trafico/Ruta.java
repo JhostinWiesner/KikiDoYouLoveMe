@@ -19,15 +19,6 @@ public class Ruta {
     private Grafo grafo; // Referencia al grafo que generó esta ruta
 
     /**
-     * Constructor para la clase Ruta
-     * @param id Identificador único de la ruta
-     * @param puntos Lista de puntos que conforman la ruta
-     */
-    public Ruta(String id, List<Point2D> puntos) {
-        this(id, puntos, null);
-    }
-
-    /**
      * Constructor para la clase Ruta con referencia al grafo
      * @param id Identificador único de la ruta
      * @param puntos Lista de puntos que conforman la ruta

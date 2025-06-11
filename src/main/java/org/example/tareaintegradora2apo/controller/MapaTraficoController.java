@@ -475,7 +475,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // No se necesita acción específica en esta vista
     }
 
-    // Agregar método para renderizar vehículos civiles
+    /*
     private void renderizarVehiculosCiviles() {
         if (simulador == null) return;
 
@@ -531,6 +531,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
             }
         }
     }
+    */
 
 
     //     * Renderiza todos los elementos del mapa
