@@ -138,21 +138,19 @@ public abstract class Vehiculo implements Runnable {
             return;
         }
 
-        Point2D destino = puntosRuta.get(puntoActual);
-        Point2D direccion = destino.subtract(posicion).normalize();
-        double paso = velocidad / 10.0; // Ajustar según la escala del mapa
+        // Mover directamente al siguiente nodo (sin interpolación)
+        posicion = puntosRuta.get(puntoActual);
+        puntoActual++;
 
-        // Calcular nueva posición
-        Point2D nuevaPosicion = posicion.add(direccion.multiply(paso));
-
-        // Verificar si llegó al punto actual de la ruta
-        if (nuevaPosicion.distance(destino) < paso) {
-            posicion = destino;
-            puntoActual++;
-        } else {
-            posicion = nuevaPosicion;
+        // Simular el tiempo que tardaría en llegar al siguiente nodo
+        // Puedes ajustar la constante para controlar la velocidad
+        try {
+            Thread.sleep((long) (500 / velocidad)); // 500 puede ser calibrado
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
+
 
     /**
      * Atiende el incidente asignado
