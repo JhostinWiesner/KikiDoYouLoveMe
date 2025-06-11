@@ -211,10 +211,18 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
             vehiculos.addAll(simulador.getVehiculos().stream()
                 .filter(Vehiculo::isDisponible)
                 .toList());
+//            //no se cual de las dos es
+//            vehiculos.addAll(simulador.getVehiculosDisponibles().stream()
+//                    .filter(Vehiculo::isDisponible)
+//                    .toList());
 
             // Actualizar estadísticas
             actualizarEstadisticas();
         });
+
+
+
+
     }
 
     /**
@@ -338,20 +346,39 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
             return;
         }
 
+        // Buscar el vehículo asignado a este incidente
+        Vehiculo vehiculoAsignado = simulador.getVehiculos().stream()
+                .filter(v -> v.getIncidenteAsignado() != null &&
+                        v.getIncidenteAsignado().equals(incidenteSeleccionado))
+                .findFirst()
+                .orElse(null);
 
-        boolean tieneVehiculoAsignado = simulador.getVehiculos().stream()
-                .anyMatch(v -> v.getIncidenteAsignado() != null && v.getIncidenteAsignado().equals(incidenteSeleccionado));
 
-        if (!tieneVehiculoAsignado) {
+        if (vehiculoAsignado == null) {
             mostrarAlerta("Error", "No hay ningún vehículo asignado a este incidente.");
             return;
         }
 
 
+
+//        boolean tieneVehiculoAsignado = simulador.getVehiculos().stream()
+//                .anyMatch(v -> v.getIncidenteAsignado() != null && v.getIncidenteAsignado().equals(incidenteSeleccionado));
+//
+//        if (!tieneVehiculoAsignado) {
+//            mostrarAlerta("Error", "No hay ningún vehículo asignado a este incidente.");
+//            return;
+//        }
+
+
         incidenteSeleccionado.setAtendido(true);
+        vehiculoAsignado.setDisponible(true);
+        vehiculoAsignado.setIncidenteAsignado(null);
+
 
         int puntos = simulador.getGestorPuntuacion().calcularPuntos(incidenteSeleccionado);
         simulador.getGestorPuntuacion().agregarPuntos(puntos);
+
+        simulador.notificarVehiculoDisponible(vehiculoAsignado);
 
         actualizarDatos();
         mostrarInformacion("Éxito", "Incidente marcado como atendido.");

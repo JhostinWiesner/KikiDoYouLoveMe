@@ -238,6 +238,21 @@ public class SimuladorSGMMS {
     /**
      * Configura los generadores automáticos de incidentes y vehículos
      */
+//    private void configurarGeneradores() {
+//        // Generador de incidentes
+//        generadorIncidentes = Executors.newScheduledThreadPool(1);
+//        generadorIncidentes.scheduleAtFixedRate(this::generarIncidenteAleatorio, 5, 10, TimeUnit.SECONDS);
+//
+//        // Generador de vehículos adicionales
+//        generadorVehiculos = Executors.newScheduledThreadPool(1);
+//        generadorVehiculos.scheduleAtFixedRate(this::generarVehiculoAleatorio, 15, 20, TimeUnit.SECONDS);
+//
+//        // Verificador de accidentes por lógica
+//        ScheduledExecutorService verificadorAccidentes = Executors.newScheduledThreadPool(1);
+//        verificadorAccidentes.scheduleAtFixedRate(this::verificarAccidentes, 2, 3, TimeUnit.SECONDS);
+//    }
+
+    // Modificar en SimuladorSGMMS - método configurarGeneradores()
     private void configurarGeneradores() {
         // Generador de incidentes
         generadorIncidentes = Executors.newScheduledThreadPool(1);
@@ -250,7 +265,12 @@ public class SimuladorSGMMS {
         // Verificador de accidentes por lógica
         ScheduledExecutorService verificadorAccidentes = Executors.newScheduledThreadPool(1);
         verificadorAccidentes.scheduleAtFixedRate(this::verificarAccidentes, 2, 3, TimeUnit.SECONDS);
+
+        // AÑADIR: Procesador de vehículos que terminaron su trabajo
+        ScheduledExecutorService procesadorVehiculos = Executors.newScheduledThreadPool(1);
+        procesadorVehiculos.scheduleAtFixedRate(this::procesarVehiculosQueTerminaron, 1, 2, TimeUnit.SECONDS);
     }
+
 
     private void generarIncidenteAleatorio() {
         if (!simulacionActiva) {
@@ -628,6 +648,12 @@ public List<VehiculoCivil> getVehiculosCiviles() {
 
     public void notificarVehiculoDisponible(Vehiculo vehiculo) {
         try {
+            vehiculo.setDisponible(true);
+            if (!vehiculosDisponibles.contains(vehiculo)) {
+                vehiculosDisponibles.add(vehiculo);
+            }
+
+
             // Añadir el vehículo a la lista de vehículos disponibles
             if (!vehiculos.contains(vehiculo)) { // Verificar que no esté ya en la lista
                 vehiculos.add(vehiculo);
@@ -647,6 +673,29 @@ public List<VehiculoCivil> getVehiculosCiviles() {
             System.err.println("Error notificando vehículo disponible: " + e.getMessage());
         }
     }
+
+    // Añadir en SimuladorSGMMS - método para procesar vehículos que terminaron su trabajo
+    public void procesarVehiculosQueTerminaron() {
+        try {
+            for (Vehiculo vehiculo : vehiculos) {
+                if (vehiculo.getIncidenteAsignado() != null &&
+                        vehiculo.getIncidenteAsignado().isAtendido() &&
+                        !vehiculo.isDisponible()) {
+
+                    // Liberar vehículo si su incidente ya fue atendido
+                    vehiculo.setDisponible(true);
+                    vehiculo.setIncidenteAsignado(null);
+                    notificarVehiculoDisponible(vehiculo);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error procesando vehículos que terminaron: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 
     // Getters
