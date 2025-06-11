@@ -53,8 +53,6 @@ public class Mapa {
      * Inicializa el grafo del mapa basado en la imagen proporcionada de Palmira
      */
     public void inicializarGrafoPalmira() throws IOException {
-        // Limpiar datos existentes
-        grafo = new Grafo();
         semaforos.clear();
         puntosEntrada.clear();
         puntosSalida.clear();

@@ -4,34 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Clase que gestiona el sistema de tráfico y semáforos en el simulador SGMMS.
- */
 public class GestorTrafico {
     
     private List<Semaforo> semaforos;
     private boolean sistemaActivo;
-    
-    /**
-     * Constructor para la clase GestorTrafico
-     */
+
     public GestorTrafico() {
         this.semaforos = new CopyOnWriteArrayList<>();
         this.sistemaActivo = false;
     }
-    
-    /**
-     * Configura los semáforos del sistema
-     * @param semaforos Lista de semáforos a gestionar
-     */
+
     public void configurarSemaforos(List<Semaforo> semaforos) {
         this.semaforos.clear();
         this.semaforos.addAll(semaforos);
     }
-    
-    /**
-     * Inicia todos los semáforos del sistema
-     */
+
     public void iniciarSemaforos() {
         if (sistemaActivo) {
             return;
@@ -43,10 +30,7 @@ public class GestorTrafico {
             semaforo.iniciar();
         }
     }
-    
-    /**
-     * Detiene todos los semáforos del sistema
-     */
+
     public void detenerSemaforos() {
         if (!sistemaActivo) {
             return;
@@ -58,11 +42,7 @@ public class GestorTrafico {
             semaforo.detener();
         }
     }
-    
-    /**
-     * Agrega un semáforo al sistema
-     * @param semaforo Semáforo a agregar
-     */
+
     public void agregarSemaforo(Semaforo semaforo) {
         semaforos.add(semaforo);
         
@@ -70,20 +50,12 @@ public class GestorTrafico {
             semaforo.iniciar();
         }
     }
-    
-    /**
-     * Remueve un semáforo del sistema
-     * @param semaforo Semáforo a remover
-     */
+
     public void removerSemaforo(Semaforo semaforo) {
         semaforo.detener();
         semaforos.remove(semaforo);
     }
-    
-    /**
-     * Obtiene las estadísticas de tráfico
-     * @return Estadísticas como mapa
-     */
+
     public java.util.Map<String, Object> obtenerEstadisticasTrafico() {
         java.util.Map<String, Object> estadisticas = new java.util.HashMap<>();
         
@@ -115,26 +87,15 @@ public class GestorTrafico {
         return estadisticas;
     }
     
-    /**
-     * Obtiene todos los semáforos del sistema
-     * @return Lista de semáforos
-     */
+
     public List<Semaforo> getSemaforos() {
         return new ArrayList<>(semaforos);
     }
-    
-    /**
-     * Verifica si el sistema de tráfico está activo
-     * @return true si está activo, false en caso contrario
-     */
+
     public boolean isSistemaActivo() {
         return sistemaActivo;
     }
-    
-    /**
-     * Obtiene el número de semáforos en rojo
-     * @return Número de semáforos en rojo
-     */
+
     public int getSemaforosEnRojo() {
         int contador = 0;
         for (Semaforo semaforo : semaforos) {
@@ -144,11 +105,7 @@ public class GestorTrafico {
         }
         return contador;
     }
-    
-    /**
-     * Obtiene el número de semáforos en verde
-     * @return Número de semáforos en verde
-     */
+
     public int getSemaforosEnVerde() {
         int contador = 0;
         for (Semaforo semaforo : semaforos) {
