@@ -15,7 +15,7 @@ public class Mapa {
     private Image imagenMapa;
     private Grafo grafo;
     private List<Semaforo> semaforos;
-    private Map<String, List<Point2D>> zonas; // Residencial, comercial, vías principales
+    private Map<String, List<Point2D>> zonas;
     private List<Point2D> puntosEntrada;
     private List<Point2D> puntosSalida;
     private Map<String, Point2D> edificiosServicio;
@@ -70,7 +70,7 @@ public class Mapa {
                 // Verificar que la línea tenga el número correcto de partes
                 if (partes.length < 6) {
                     System.out.println("Advertencia: Línea con datos incompletos: " + linea);
-                    continue; // Si la línea está incompleta, la saltamos
+                    continue;
                 }
 
 
@@ -149,29 +149,26 @@ public class Mapa {
         agregarSemaforosEstrategicos(contadorSemaforos);
     }
     private Semaforo.Patron determinarPatronSemaforoAleatorio() {
-        // Obtener todos los valores del enum Patron
         Semaforo.Patron[] patrones = Semaforo.Patron.values();
 
-        // Seleccionar un valor aleatorio
         Random random = new Random();
         return patrones[random.nextInt(patrones.length)];  // Selecciona aleatoriamente un patrón
     }
 
     private boolean estaEnZonaEdificios(Point2D posicion) {
-        // Definir áreas donde están los edificios de servicio
-        // Hospital (zona comercial central)
+        // Hospital
         if (posicion.getX() >= 400 && posicion.getX() <= 600 &&
                 posicion.getY() >= 400 && posicion.getY() <= 600) {
             return true;
         }
 
-        // Estación de policía (zona residencial)
+        // Estación de policía
         if (posicion.getX() >= 100 && posicion.getX() <= 300 &&
                 posicion.getY() >= 100 && posicion.getY() <= 300) {
             return true;
         }
 
-        // Estación de bomberos (zona industrial)
+        // Estación de bomberos
         if (posicion.getX() >= 700 && posicion.getX() <= 900 &&
                 posicion.getY() >= 700 && posicion.getY() <= 900) {
             return true;
@@ -181,17 +178,14 @@ public class Mapa {
     }
 
     private Semaforo.Patron determinarPatronSemaforo(int i, int j) {
-        // Intersecciones centrales: patrón normal
         if (i >= 3 && i <= 6 && j >= 3 && j <= 6) {
             return Semaforo.Patron.NORMAL;
         }
 
-        // Intersecciones en vías principales externas: patrón rápido
         if (i == 0 || i == 9 || j == 0 || j == 9) {
             return Semaforo.Patron.RAPIDO;
         }
 
-        // Intersecciones en zonas residenciales: patrón lento
         if ((i <= 3 && j <= 3) || (i >= 6 && j >= 6)) {
             return Semaforo.Patron.LENTO;
         }
@@ -203,7 +197,6 @@ public class Mapa {
     private void agregarSemaforosEstrategicos(int contadorInicial) {
         int contador = contadorInicial;
 
-        // Semáforos cerca de puntos de entrada/salida
         Point2D[] posicionesEstrategicas = {
                 new Point2D(150, 150),  // Cerca de entrada norte-oeste
                 new Point2D(850, 150),  // Cerca de entrada norte-este
@@ -224,16 +217,13 @@ public class Mapa {
 
 
     private void definirEdificiosServicio() {
-        // Hospital en zona comercial central
+
         edificiosServicio.put("hospital", new Point2D(500, 500));
 
-        // Estación de policía en zona residencial
         edificiosServicio.put("estacion_policia", new Point2D(200, 200));
 
-        // Estación de bomberos en zona industrial
         edificiosServicio.put("estacion_bomberos", new Point2D(800, 800));
 
-        // Edificios adicionales
         edificiosServicio.put("municipalidad", new Point2D(450, 450));
         edificiosServicio.put("centro_emergencias", new Point2D(550, 550));
 
@@ -272,7 +262,6 @@ public class Mapa {
         int indice = (int) (Math.random() * zona.size());
         Point2D puntoBase = zona.get(indice);
 
-        // Agregar algo de variación aleatoria
         double offsetX = (Math.random() - 0.5) * 80; // ±40 píxeles
         double offsetY = (Math.random() - 0.5) * 80;
 
@@ -306,7 +295,7 @@ public class Mapa {
             return false;
         }
 
-        // Implementación simple: verificar si el punto está cerca de algún punto de la zona
+        //verificar si el punto está cerca de algún punto de la zona
         for (Point2D p : zona) {
             if (p.distance(punto) < 50) {
                 return true;
@@ -316,14 +305,9 @@ public class Mapa {
         return false;
     }
 
-
     public Map<String, Point2D> getEdificiosServicio() {
         return edificiosServicio;
     }
-
-
-
-    // Getters
 
     public Image getImagenMapa() {
         return imagenMapa;

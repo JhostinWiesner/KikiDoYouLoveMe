@@ -4,7 +4,7 @@ class MapArista {
     private String id;
     private MapNodo origen;
     private MapNodo destino;
-    private double peso; // Distancia o tiempo
+    private double peso;
 
 
     public MapArista(String id, MapNodo origen, MapNodo destino, double peso) {

@@ -14,7 +14,7 @@ public class Ruta {
     private LocalDateTime tiempoInicio;
     private LocalDateTime tiempoFin;
     private boolean completada;
-    private Grafo grafo; // Referencia al grafo que generó esta ruta
+    private Grafo grafo;
 
 
     public Ruta(String id, List<Point2D> puntos, Grafo grafo) {
@@ -47,8 +47,6 @@ public class Ruta {
     public double calcularTiempoEstimado(double velocidad) {
         return calcularDistanciaTotal() / velocidad;
     }
-
-    // Getters y setters
 
     public String getId() {
         return id;

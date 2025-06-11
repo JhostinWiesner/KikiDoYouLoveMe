@@ -5,28 +5,16 @@ import org.example.tareaintegradora2apo.model.trafico.Ruta;
 
 import java.util.*;
 
-/**
- * Clase que representa un grafo para la navegación de vehículos en el mapa.
- */
 public class Grafo {
 
     private Map<String, MapNodo> nodos;
     private List<MapArista> aristas;
 
-    /**
-     * Constructor para la clase Grafo
-     */
     public Grafo() {
         this.nodos = new HashMap<>();
         this.aristas = new ArrayList<>();
     }
 
-    /**
-     * Agrega un nodo al grafo
-     * @param id Identificador único del nodo
-     * @param posicion Posición del nodo en el mapa
-     * @return Nodo creado
-     */
     public MapNodo agregarNodo(String id, Point2D posicion,boolean tieneSemaforo) {
         MapNodo nodo = new MapNodo(id, posicion,tieneSemaforo);
         nodos.put(id, nodo);
@@ -84,7 +72,6 @@ public class Grafo {
 
 
     public Ruta calcularRuta(Point2D inicio, Point2D fin) {
-        // Encontrar los nodos más cercanos a las posiciones de inicio y fin
         MapNodo nodoInicio = getNodoMasCercano(inicio);
         MapNodo nodoFin = getNodoMasCercano(fin);
 
@@ -93,7 +80,6 @@ public class Grafo {
         Map<MapNodo, MapNodo> predecesores = new HashMap<>();
         PriorityQueue<MapNodo> cola = new PriorityQueue<>(Comparator.comparingDouble(distancias::get));
 
-        // Inicializar distancias
         for (MapNodo nodo : nodos.values()) {
             distancias.put(nodo, Double.MAX_VALUE);
         }
@@ -123,7 +109,6 @@ public class Grafo {
             }
         }
 
-        // Reconstruir la ruta
         List<Point2D> puntos = new ArrayList<>();
         MapNodo actual = nodoFin;
 

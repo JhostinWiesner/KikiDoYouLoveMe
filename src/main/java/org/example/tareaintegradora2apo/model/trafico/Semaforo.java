@@ -13,10 +13,10 @@ public class Semaforo implements Runnable {
     }
 
     public enum Patron {
-        NORMAL,     // Verde(5s) -> Amarillo(2s) -> Rojo(5s)
-        RAPIDO,     // Verde(3s) -> Amarillo(1s) -> Rojo(3s)
-        LENTO,      // Verde(8s) -> Amarillo(3s) -> Rojo(8s)
-        NOCTURNO    // Amarillo intermitente
+        NORMAL,
+        RAPIDO,
+        LENTO,
+        NOCTURNO
     }
 
     private String id;
@@ -28,10 +28,10 @@ public class Semaforo implements Runnable {
 
     // Tiempos para cada estado en milisegundos según el patrón
     private static final int[][] TIEMPOS = {
-            {5000, 2000, 5000},  // NORMAL: Verde, Amarillo, Rojo
-            {3000, 1000, 3000},  // RAPIDO
-            {8000, 3000, 8000},  // LENTO
-            {1000, 1000, 0}      // NOCTURNO (solo usa verde y amarillo)
+            {5000, 2000, 5000},
+            {3000, 1000, 3000},
+            {8000, 3000, 8000},
+            {1000, 1000, 0}
     };
 
     // Contadores de vehículos
