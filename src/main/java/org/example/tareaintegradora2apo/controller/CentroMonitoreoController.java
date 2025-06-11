@@ -183,4 +183,9 @@ public class CentroMonitoreoController implements Initializable, SimuladorSGMMS.
     public void onEstadisticasActualizadas(Map<String, Object> estadisticas) {
         actualizarInterfaz();
     }
+
+    @Override
+    public void onVehiculoDisponible(Vehiculo vehiculo) {
+
+    }
 }

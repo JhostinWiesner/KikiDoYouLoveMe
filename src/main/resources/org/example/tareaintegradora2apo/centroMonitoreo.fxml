@@ -127,9 +127,9 @@
                         <Label text="Disponibles:" />
                         <Label fx:id="lblVehiculosDisponibles" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;" text="0" GridPane.columnIndex="1" />
                         <Label text="Patrullas:" GridPane.rowIndex="1" />
-                        <Label fx:id="lblPatrullas" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="lblPatrullas" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" text="0" textFill="#2b2424" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Ambulancias:" GridPane.rowIndex="2" />
-                        <Label fx:id="lblAmbulancias" prefHeight="16.0" prefWidth="0.0" style="-fx-font-weight: bold; -fx-text-fill: #ecf0f1;" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="lblAmbulancias" blendMode="COLOR_BURN" prefHeight="16.0" prefWidth="0.0" style="-fx-font-weight: bold;" text="0" textFill="#35590b" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Bomberos:" GridPane.rowIndex="3" />
                         <Label fx:id="lblBomberos" style="-fx-font-weight: bold; -fx-text-fill: #e74c3c;" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>

@@ -25,6 +25,7 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * Controlador para la vista del Panel de Incidentes.
@@ -120,6 +121,14 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         );
         timeline.setCycleCount(javafx.animation.Timeline.INDEFINITE);
         timeline.play();
+
+       // actualizarVehiculosDisponibles();
+    }
+    private void actualizarVehiculosDisponibles() {
+        vehiculos.clear();
+        vehiculos.addAll(simulador.getVehiculos().stream()
+                .filter(Vehiculo::isDisponible)
+                .toList());
     }
 
     /**
@@ -299,7 +308,9 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         
         // Asignar vehículo al incidente
         vehiculoSeleccionado.asignarIncidente(incidenteSeleccionado, simulador.getMapa().getGrafo());
-        
+
+        actualizarDatos();
+
         // Activar modo emergencia si es necesario
         if (vehiculoSeleccionado instanceof Ambulancia) {
             ((Ambulancia) vehiculoSeleccionado).activarEmergencia();
@@ -307,7 +318,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
             ((Bombero) vehiculoSeleccionado).activarEmergencia();
         }
         
-        actualizarDatos();
+
         mostrarInformacion("Éxito", "Vehículo asignado correctamente al incidente.");
     }
     
@@ -316,27 +327,36 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
      */
     private void marcarIncidenteAtendido() {
         Incidente incidenteSeleccionado = tablaIncidentes.getSelectionModel().getSelectedItem();
-        
+
         if (incidenteSeleccionado == null) {
             mostrarAlerta("Error", "Debe seleccionar un incidente.");
             return;
         }
-        
+
         if (incidenteSeleccionado.isAtendido()) {
             mostrarAlerta("Error", "El incidente ya ha sido atendido.");
             return;
         }
-        
-        // Marcar como atendido
+
+
+        boolean tieneVehiculoAsignado = simulador.getVehiculos().stream()
+                .anyMatch(v -> v.getIncidenteAsignado() != null && v.getIncidenteAsignado().equals(incidenteSeleccionado));
+
+        if (!tieneVehiculoAsignado) {
+            mostrarAlerta("Error", "No hay ningún vehículo asignado a este incidente.");
+            return;
+        }
+
+
         incidenteSeleccionado.setAtendido(true);
 
-        // Calcular puntuación
         int puntos = simulador.getGestorPuntuacion().calcularPuntos(incidenteSeleccionado);
         simulador.getGestorPuntuacion().agregarPuntos(puntos);
+
         actualizarDatos();
         mostrarInformacion("Éxito", "Incidente marcado como atendido.");
     }
-    
+
     /**
      * Muestra una alerta de error
      * @param titulo Título de la alerta
@@ -393,5 +413,10 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
     @Override
     public void onEstadisticasActualizadas(Map<String, Object> estadisticas) {
         actualizarEstadisticas();
+    }
+
+    @Override
+    public void onVehiculoDisponible(Vehiculo vehiculo) {
+        actualizarDatos();
     }
 }

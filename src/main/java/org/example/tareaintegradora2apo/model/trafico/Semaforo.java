@@ -137,7 +137,7 @@ public class Semaforo implements Runnable {
             System.err.println("Error fatal en semáforo " + id + ": " + e.getMessage());
         } finally {
             activo = false;
-            System.out.println("Semáforo " + id + " detenido");
+           // System.out.println("Semáforo " + id + " detenido");
         }
     }
 

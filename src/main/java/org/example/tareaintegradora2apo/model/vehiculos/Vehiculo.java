@@ -1,10 +1,7 @@
 package org.example.tareaintegradora2apo.model.vehiculos;
 
-import javafx.application.Platform;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
+import org.example.tareaintegradora2apo.controller.SimuladorSGMMS;
 import org.example.tareaintegradora2apo.model.map.Grafo;
 import org.example.tareaintegradora2apo.model.trafico.Ruta;
 import org.example.tareaintegradora2apo.model.incidentes.Incidente;
@@ -26,15 +23,11 @@ public abstract class Vehiculo implements Runnable {
     protected Ruta rutaActual;
     protected Incidente incidenteAsignado;
     protected Thread hiloVehiculo;
-    protected boolean enMovimiento;
+    protected AtomicBoolean enMovimiento;
     protected List<Point2D> puntosRuta;
     protected int puntoActual;
     protected double prioridad;
-
-    protected Image image;
-    protected GraphicsContext gc;
-    protected double ancho = 32;
-    protected double alto = 32;
+    protected SimuladorSGMMS simulador;
 
     /**
      * Constructor para la clase Vehiculo
@@ -42,17 +35,17 @@ public abstract class Vehiculo implements Runnable {
      * @param id              Identificador único del vehículo
      * @param posicionInicial Posición inicial en el mapa
      * @param velocidad       Velocidad base del vehículo
+     * @param simulador       Instancia del simulador para acceder a la puntuación
      */
-    public Vehiculo(String id, Point2D posicionInicial, double velocidad, Image imagen, GraphicsContext gc) {
+    public Vehiculo(String id, Point2D posicionInicial, double velocidad, SimuladorSGMMS simulador) {
         this.id = id;
         this.posicion = posicionInicial;
         this.velocidad = velocidad;
         this.disponible = true;
-        this.enMovimiento = false;
+        this.enMovimiento = new AtomicBoolean(false);
         this.puntosRuta = new ArrayList<>();
         this.puntoActual = 0;
-        this.image = imagen;
-        this.gc = gc;
+        this.simulador = simulador;
     }
 
     /**
@@ -70,7 +63,7 @@ public abstract class Vehiculo implements Runnable {
      * Detiene el movimiento del vehículo
      */
     public void detener() {
-        enMovimiento = false;
+        enMovimiento.set(false);
         if (hiloVehiculo != null) {
             hiloVehiculo.interrupt();
         }
@@ -86,7 +79,7 @@ public abstract class Vehiculo implements Runnable {
         this.puntosRuta = ruta.getPuntos();
         this.puntoActual = 0;
         this.disponible = false;
-        this.enMovimiento = true;
+        this.enMovimiento.set(true);
     }
 
     /**
@@ -96,10 +89,16 @@ public abstract class Vehiculo implements Runnable {
      * @param grafo     Grafo de navegación para calcular la ruta
      */
     public void asignarIncidente(Incidente incidente, Grafo grafo) {
+        if (!this.disponible){
+            return;
+        }
+
         this.incidenteAsignado = incidente;
         // Calcular ruta desde posición actual hasta el incidente
         Ruta rutaHaciaIncidente = grafo.calcularRuta(this.posicion, incidente.getPosicion());
         asignarRuta(rutaHaciaIncidente);
+
+        // Puntaje no se debe manejar aquí, solo se asigna el incidente y se calcula la ruta
     }
 
     /**
@@ -110,27 +109,24 @@ public abstract class Vehiculo implements Runnable {
      */
     public abstract boolean debeDetenerse(Semaforo semaforo);
 
-
-    public void dibujar() {
-        double x = posicion.getX() - ancho / 2;
-        double y = posicion.getY() - alto / 2;
-        gc.drawImage(image, x, y, ancho, alto);
-    }
     /**
      * Método que se ejecuta en el hilo del vehículo
      */
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    if (enMovimiento && puntosRuta.size() > 0) {
+                    if (enMovimiento.get() && puntosRuta.size() > 0) {
                         mover();
-                        Platform.runLater(this::dibujar);
                     }
-                    Thread.sleep(30); // Ajustar velocidad de movimiento
+                    Thread.sleep((long) (100 / velocidad)); // Ajustar velocidad de movimiento
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    break;
+                } catch (Exception e) {
+                    System.err.println("Error en hilo de vehículo " + id + ": " + e.getMessage());
+                    // Continuar con la ejecución
                 }
             }
         } catch (Exception e) {
@@ -147,35 +143,20 @@ public abstract class Vehiculo implements Runnable {
             if (incidenteAsignado != null) {
                 atenderIncidente();
             }
-            enMovimiento = false;
-            disponible = true;
             return;
         }
 
-        Point2D origen = posicion;
-        Point2D destino = puntosRuta.get(puntoActual);
+        // Mover directamente al siguiente nodo (sin interpolación)
+        posicion = puntosRuta.get(puntoActual);
+        puntoActual++;
 
-        Point2D direccion = destino.subtract(origen).normalize();
-
-        double distancia = origen.distance(destino);
-        double paso = velocidad / 10.0;
-
-        while (posicion.distance(destino) > paso) {
-            if (Thread.currentThread().isInterrupted() || !enMovimiento) return;
-
-            posicion = posicion.add(direccion.multiply(paso));
-
-            Platform.runLater(() -> dibujar());
-        }
+        // Simular el tiempo que tardaría en llegar al siguiente nodo
         try {
-            Thread.sleep(30); // 500 puede ser calibrado
+            Thread.sleep((long) (500 / velocidad)); // 500 puede ser calibrado
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
-
-
-
 
     /**
      * Atiende el incidente asignado
@@ -185,8 +166,16 @@ public abstract class Vehiculo implements Runnable {
             // Simular tiempo de atención
             try {
                 Thread.sleep(incidenteAsignado.getTiempoAtencion());
-                incidenteAsignado.setAtendido(true);
+                incidenteAsignado.setAtendido(true);  // Marca el incidente como atendido
+                // Liberamos el vehículo después de atender el incidente
                 incidenteAsignado = null;
+                disponible = true;
+                // Notificamos que el vehículo está disponible ahora
+                simulador.notificarVehiculoDisponible(this);
+
+                int puntos = simulador.getGestorPuntuacion().calcularPuntos(incidenteAsignado);
+                simulador.getGestorPuntuacion().agregarPuntos(puntos);
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -232,8 +221,6 @@ public abstract class Vehiculo implements Runnable {
     }
 
     public boolean isEnMovimiento() {
-        return enMovimiento;
+        return enMovimiento.get();
     }
-
-
 }
