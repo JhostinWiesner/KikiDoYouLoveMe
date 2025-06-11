@@ -14,9 +14,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 import org.example.tareaintegradora2apo.model.incidentes.*;
 import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 import org.example.tareaintegradora2apo.model.vehiculos.*;
+
 
 
 import java.io.IOException;
@@ -47,6 +49,12 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     private GraphicsContext gc;
     private AnimationTimer animationTimer;
 
+    private Image policeImg;
+    private Image ambulanceImg;
+    private Image fireTruckImg;
+    private Image npcCarImg;
+
+
     // Variables para navegación de cámara
     private double camaraX = 412.5;
     private double camaraY = 412.5;
@@ -68,6 +76,11 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gc = canvasMapa.getGraphicsContext2D();
+
+        policeImg = new Image(getClass().getResourceAsStream("/images/policeCar.png"));
+        ambulanceImg = new Image(getClass().getResourceAsStream("/images/ambulenceCar.png"));
+        fireTruckImg = new Image(getClass().getResourceAsStream("/images/fireCar.png"));
+        npcCarImg = new Image(getClass().getResourceAsStream("/images/npcVehicle/carro.png"));
 
 
         // Configurar canvas para recibir eventos de teclado
@@ -327,49 +340,21 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         for (Vehiculo vehiculo : simulador.getVehiculos()) {
             double x = vehiculo.getPosicion().getX();
             double y = vehiculo.getPosicion().getY();
-
             x *= factorEscala;
             y *= factorEscala;
 
-            // Color según tipo de vehículo
-            Color color;
-            String simbolo;
-
+            // Dibujar los sprites según el tipo de vehículo
             if (vehiculo instanceof Patrulla) {
-                color = Color.BLUE;
-                simbolo = "P";
+                gc.drawImage(policeImg, x - 15, y - 15, 30, 30);  // Tamaño ajustable
             } else if (vehiculo instanceof Ambulancia) {
-                color = Color.WHITE;
-                simbolo = "A";
+                gc.drawImage(ambulanceImg, x - 15, y - 15, 30, 30);
             } else if (vehiculo instanceof Bombero) {
-                color = Color.RED;
-                simbolo = "B";
-            } else {
-                color = Color.GRAY;
-                simbolo = "V";
-            }
-
-            // Cuerpo del vehículo
-            gc.setFill(color);
-            gc.fillOval(x - 8, y - 8, 16, 16);
-
-            // Borde
-            gc.setStroke(vehiculo.isDisponible() ? Color.GREEN : Color.ORANGE);
-            gc.setLineWidth(2.0);
-            gc.strokeOval(x - 8, y - 8, 16, 16);
-
-            // Símbolo del vehículo
-            gc.setFill(Color.BLACK);
-            gc.fillText(simbolo, x - 4, y + 4);
-
-            // Indicador de movimiento
-            if (vehiculo.isEnMovimiento()) {
-                gc.setFill(Color.YELLOW);
-                gc.fillOval(x - 2, y - 12, 4, 4);
+                gc.drawImage(fireTruckImg, x - 15, y - 15, 30, 30);
+            } else if (vehiculo instanceof VehiculoCivil) {
+                gc.drawImage(npcCarImg, x - 15, y - 15, 30, 30);
             }
         }
     }
-
 
     private void renderizarVehiculosCiviles() {
         if (simulador == null || simulador.getGestorVehiculosCiviles() == null) {
@@ -377,48 +362,15 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
 
         double factorEscala = 0.6;
-
         for (VehiculoCivil vehiculo : simulador.getGestorVehiculosCiviles().getVehiculosCiviles()) {
             double x = vehiculo.getPosicion().getX() * factorEscala;
             double y = vehiculo.getPosicion().getY() * factorEscala;
 
-            // Color y tamaño según tipo de vehículo
-            Color color = Color.LIGHTGREEN;
-            String simbolo = "C";
-            double tamaño = 10;
-
-            // Cuerpo del vehículo
-            gc.setFill(color);
-            gc.fillOval(x - tamaño/2, y - tamaño/2, tamaño, tamaño);
-
-            // Borde según estado
-            if (vehiculo.isEnMovimiento()) {
-                gc.setStroke(Color.GREEN);
-                gc.setLineWidth(1.5);
-            } else {
-                gc.setStroke(Color.GRAY);
-                gc.setLineWidth(1.0);
-            }
-            gc.strokeOval(x - tamaño/2, y - tamaño/2, tamaño, tamaño);
-
-            // Símbolo del vehículo
-            gc.setFill(Color.BLACK);
-            gc.setFont(javafx.scene.text.Font.font(8));
-            gc.fillText(simbolo, x - 3, y + 3);
-
-            // Indicador de agresividad (para debug)
-            if (vehiculo.getFactorAgresividad() > 0.5) {
-                gc.setFill(Color.RED);
-                gc.fillOval(x - 2, y - tamaño/2 - 4, 4, 4);
-            }
-
-            // Indicador de ruta larga
-            if (vehiculo.isEnRutaLarga()) {
-                gc.setFill(Color.PURPLE);
-                gc.fillOval(x + tamaño/2, y - tamaño/2, 4, 4);
-            }
+            // Dibujar el sprite del vehículo civil
+            gc.drawImage(npcCarImg, x - 15, y - 15, 30, 30);
         }
     }
+
 
     /**
      * Renderiza los incidentes
@@ -519,20 +471,19 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // Limpiar canvas
         gc.clearRect(0, 0, canvasMapa.getWidth(), canvasMapa.getHeight());
 
-        // Aplicar transformación de cámara
+        // Aplicar transformación de cámara (escala y desplazamiento)
         gc.save();
-
-        double escala = 1.6;
+        double escala = 1.6;  // Factor de escala para ajustar el tamaño del mapa
         gc.scale(escala, escala);
         gc.translate(-camaraX / escala, -camaraY / escala);
 
-        // Renderizar fondo del mapa
+        // Renderizar fondo del mapa (puede ser imagen o color)
         renderizarFondoMapa();
 
         // Renderizar semáforos
         renderizarSemaforos();
 
-        // Renderizar vehículos civiles PRIMERO (para que aparezcan detrás)
+        // Renderizar vehículos civiles (PRIMERO para que aparezcan detrás)
         renderizarVehiculosCiviles();
 
         // Renderizar vehículos de servicio (encima de los civiles)
@@ -541,9 +492,10 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // Renderizar incidentes (encima de todo)
         renderizarIncidentes();
 
-        // Restaurar transformación
+        // Restaurar transformación (cámara) después de renderizar todo
         gc.restore();
     }
+
 
     @Override
     public void onVehiculoDisponible(Vehiculo vehiculo) {

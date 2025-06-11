@@ -2,6 +2,7 @@ module org.example.tareaintegradora2apo {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires java.desktop;
 
     opens org.example.tareaintegradora2apo.model.incidentes to javafx.base;
     opens org.example.tareaintegradora2apo.model.vehiculos to javafx.base;// Exporta el paquete view
