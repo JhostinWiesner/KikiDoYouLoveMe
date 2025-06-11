@@ -7,6 +7,7 @@ import org.example.tareaintegradora2apo.model.map.MapNodo;
 import org.example.tareaintegradora2apo.model.map.Mapa;
 import org.example.tareaintegradora2apo.model.sistema.GestorPuntuacion;
 import org.example.tareaintegradora2apo.model.trafico.GestorTrafico;
+import org.example.tareaintegradora2apo.model.trafico.GestorVehiculos;
 import org.example.tareaintegradora2apo.model.trafico.Ruta;
 import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 import org.example.tareaintegradora2apo.model.estructuras.*;
@@ -35,6 +36,7 @@ public class SimuladorSGMMS {
     private Mapa mapa;
     private GestorTrafico gestorTrafico;
     private GestorPuntuacion gestorPuntuacion;
+    private GestorVehiculos gestorV;
 
     // Listas de entidades del simulador
     private List<Vehiculo> vehiculos;
@@ -92,6 +94,7 @@ public class SimuladorSGMMS {
         //this.mapa = new Mapa(null);
         this.gestorTrafico = new GestorTrafico();
         this.gestorPuntuacion = new GestorPuntuacion();
+        this.gestorV = new GestorVehiculos(this);
 
         // Inicializar listas
         this.vehiculos = new CopyOnWriteArrayList<>();
@@ -126,12 +129,14 @@ public class SimuladorSGMMS {
             vehiculos.add(patrulla);
         }
 
-// Crear 2 bomberos
+        // Crear 2 bomberos
         for (int i = 0; i < 2; i++) {
             Vehiculo bombero = new Bombero("B" + (++contadorVehiculos), edificiosServicio.get("estacion_bomberos"), this);
             vehiculosDisponibles.add(bombero);
              vehiculos.add(bombero);
         }
+
+        this.gestorV = new GestorVehiculos(this);
 
     }
 
@@ -168,6 +173,12 @@ public class SimuladorSGMMS {
     /**
      * Detiene la simulación
      */
+// Getter para el gestor de vehículos civiles:
+    public GestorVehiculos getGestorVehiculosCiviles() {
+        return gestorV;
+    }
+
+    // Modificar el método detenerSimulacion():
     public void detenerSimulacion() {
         if (!simulacionActiva) {
             return;
@@ -183,15 +194,13 @@ public class SimuladorSGMMS {
             generadorVehiculos.shutdown();
         }
 
-        // Detener vehículos
+        // Detener vehículos de servicio
         for (Vehiculo vehiculo : vehiculos) {
             vehiculo.detener();
         }
 
-        //Detener vehiculos civiles
-        for (VehiculoCivil vehiculo : vehiculosCiviles) {
-            vehiculo.detener();
-        }
+        // Detener vehículos civiles usando el gestor
+        gestorV.detenerTodos();
 
         // Detener semáforos
         gestorTrafico.detenerSemaforos();
@@ -201,38 +210,37 @@ public class SimuladorSGMMS {
      * Genera vehículos iniciales en el mapa
      */
     private void generarVehiculosIniciales() {
-        // Ya no generamos vehículos de servicio aquí, solo vehículos civiles
-        for (int i = 0; i < 10; i++) {
-            generarVehiculoCivil();
+        // Generar vehículos civiles usando el gestor
+        for (int i = 0; i < 12; i++) {
+            gestorV.generarVehiculoCivil();
         }
 
+        // Notificar vehículos de servicio disponibles
         for (Vehiculo vehiculo : vehiculos) {
             notificarVehiculoDisponible(vehiculo);
         }
     }
 
-    // Agregar método para generar vehículos civiles
-    private void generarVehiculoCivil() {
-        Point2D posicion = mapa.getPuntoEntradaAleatorio();
-        String[] tipos = {"Sedan", "SUV", "Camión", "Motocicleta"};
-        String tipo = tipos[new Random().nextInt(tipos.length)];
-
-        VehiculoCivil vehiculo = new VehiculoCivil("C" + (++contadorVehiculos), posicion, this);
-        vehiculosCiviles.add(vehiculo);
-
-        // Asignar ruta aleatoria
-        vehiculo.asignarRutaAleatoria(mapa.getGrafo());
-
-        // Iniciar movimiento
-        vehiculo.iniciar();
+    private void generarVehiculoAleatorio() {
+        if (!simulacionActiva) {
+            return;
+        }
+        // Usar el gestor para manejar la población de vehículos civiles
+        gestorV.gestionarPoblacionVehiculos();
     }
 
-    private void generarVehiculoAleatorio() {
-        if (!simulacionActiva || vehiculosCiviles.size() >= 30) {
+    // Nuevo método para mantenimiento de vehículos civiles:
+    private void mantenimientoVehiculosCiviles() {
+        if (!simulacionActiva) {
             return;
         }
 
-        generarVehiculoCivil();
+        try {
+            gestorV.reiniciarVehiculosFueraDeMapa();
+            gestorV.limpiarVehiculosInactivos();
+        } catch (Exception e) {
+            System.err.println("Error en mantenimiento de vehículos civiles: " + e.getMessage());
+        }
     }
 
     /**
@@ -648,21 +656,22 @@ public List<VehiculoCivil> getVehiculosCiviles() {
 
     public void notificarVehiculoDisponible(Vehiculo vehiculo) {
         try {
+            // CORRECCIÓN: Asegurar que el vehículo esté marcado como disponible
             vehiculo.setDisponible(true);
+
+            // CORRECCIÓN: Añadir a vehiculosDisponibles si no está ya ahí
             if (!vehiculosDisponibles.contains(vehiculo)) {
                 vehiculosDisponibles.add(vehiculo);
             }
 
-
-            // Añadir el vehículo a la lista de vehículos disponibles
-            if (!vehiculos.contains(vehiculo)) { // Verificar que no esté ya en la lista
+            // Verificar que esté en la lista principal de vehículos
+            if (!vehiculos.contains(vehiculo)) {
                 vehiculos.add(vehiculo);
             }
 
             // Notificar a los observadores que el vehículo está disponible
             for (Observer obs : observadores) {
                 try {
-
                     obs.onVehiculoDisponible(vehiculo);
                 } catch (Exception e) {
                     System.err.println("Error notificando vehículo disponible a un observador: " + e.getMessage());

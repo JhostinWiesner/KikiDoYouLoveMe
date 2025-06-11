@@ -58,10 +58,6 @@ public class Mapa {
         // Crear semáforos en intersecciones principales (evitando edificios)
         //crearSemaforosEnIntersecciones();
 
-        // Definir edificios de servicio
-        definirEdificiosServicio();
-
-
     }
 
     public void cargarNodos(String pathNodos) throws IOException {
@@ -240,29 +236,6 @@ public class Mapa {
         }
     }
 
-    /**
-     * Define las ubicaciones de los edificios de servicio
-     */
-    private void definirEdificiosServicio() {
-        // Hospital en zona comercial central
-        edificiosServicio.put("hospital", new Point2D(500, 500));
-
-        // Estación de policía en zona residencial
-        edificiosServicio.put("estacion_policia", new Point2D(200, 200));
-
-        // Estación de bomberos en zona industrial
-        edificiosServicio.put("estacion_bomberos", new Point2D(800, 800));
-
-        // Edificios adicionales
-        edificiosServicio.put("municipalidad", new Point2D(450, 450));
-        edificiosServicio.put("centro_emergencias", new Point2D(550, 550));
-
-        System.out.println("Edificios de servicio definidos:");
-        for (Map.Entry<String, Point2D> entry : edificiosServicio.entrySet()) {
-            System.out.println("- " + entry.getKey() + ": " +
-                    String.format("(%.0f, %.0f)", entry.getValue().getX(), entry.getValue().getY()));
-        }
-    }
 
     /**
      * Obtiene un punto de entrada aleatorio

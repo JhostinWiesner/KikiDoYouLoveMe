@@ -167,17 +167,20 @@ public abstract class Vehiculo implements Runnable {
             try {
                 Thread.sleep(incidenteAsignado.getTiempoAtencion());
 
+                // CORRECCIÓN: Calcular puntos ANTES de poner incidenteAsignado a null
                 int puntos = simulador.getGestorPuntuacion().calcularPuntos(incidenteAsignado);
                 simulador.getGestorPuntuacion().agregarPuntos(puntos);
 
-                incidenteAsignado.setAtendido(true);  // Marca el incidente como atendido
-                // Liberamos el vehículo después de atender el incidente
+                // Marcar el incidente como atendido
+                incidenteAsignado.setAtendido(true);
+
+                // Liberar el vehículo DESPUÉS de calcular puntos
                 incidenteAsignado = null;
                 disponible = true;
+                enMovimiento.set(false); // AÑADIR: Detener movimiento
 
-                // Notificamos que el vehículo está disponible ahora
+                // Notificar que el vehículo está disponible
                 simulador.notificarVehiculoDisponible(this);
-
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

@@ -211,11 +211,6 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
             vehiculos.addAll(simulador.getVehiculos().stream()
                 .filter(Vehiculo::isDisponible)
                 .toList());
-//            //no se cual de las dos es
-//            vehiculos.addAll(simulador.getVehiculosDisponibles().stream()
-//                    .filter(Vehiculo::isDisponible)
-//                    .toList());
-
             // Actualizar estadísticas
             actualizarEstadisticas();
         });
@@ -353,35 +348,27 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
                 .findFirst()
                 .orElse(null);
 
-
         if (vehiculoAsignado == null) {
             mostrarAlerta("Error", "No hay ningún vehículo asignado a este incidente.");
             return;
         }
 
-
-
-//        boolean tieneVehiculoAsignado = simulador.getVehiculos().stream()
-//                .anyMatch(v -> v.getIncidenteAsignado() != null && v.getIncidenteAsignado().equals(incidenteSeleccionado));
-//
-//        if (!tieneVehiculoAsignado) {
-//            mostrarAlerta("Error", "No hay ningún vehículo asignado a este incidente.");
-//            return;
-//        }
-
-
+        // CORRECCIÓN: Marcar incidente como atendido
         incidenteSeleccionado.setAtendido(true);
+
+        // CORRECCIÓN: Liberar el vehículo asignado
         vehiculoAsignado.setDisponible(true);
-        vehiculoAsignado.setIncidenteAsignado(null);
+        vehiculoAsignado.setIncidenteAsignado(null); // Necesitas añadir este setter
 
-
+        // Calcular y agregar puntos
         int puntos = simulador.getGestorPuntuacion().calcularPuntos(incidenteSeleccionado);
         simulador.getGestorPuntuacion().agregarPuntos(puntos);
 
+        // Notificar que el vehículo está disponible nuevamente
         simulador.notificarVehiculoDisponible(vehiculoAsignado);
 
         actualizarDatos();
-        mostrarInformacion("Éxito", "Incidente marcado como atendido.");
+        mostrarInformacion("Éxito", "Incidente marcado como atendido y vehículo liberado.");
     }
 
     /**
