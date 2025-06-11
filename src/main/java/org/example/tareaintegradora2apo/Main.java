@@ -9,10 +9,7 @@ import org.example.tareaintegradora2apo.controller.SimuladorSGMMS;
 import org.example.tareaintegradora2apo.controller.MenuPrincipalController;
 
 
-/**
- * Clase principal del Sistema de Gestión y Monitoreo de Movilidad y Seguridad (SGMMS).
- * Inicia la aplicación JavaFX y configura la ventana principal.
- */
+
 public class Main extends Application {
 
     private SimuladorSGMMS simulador;
@@ -20,18 +17,18 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Crear instancia del simulador
+
             simulador = new SimuladorSGMMS();
 
-            // Cargar la pantalla principal (menú)
+            // Cargar la pantalla principal (el menu)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/menuPrincipal.fxml"));
             Parent root = loader.load();
 
-            // Obtener el controlador y configurarlo
+
             MenuPrincipalController controller = loader.getController();
             controller.setPrimaryStage(primaryStage, simulador);
 
-            // Configurar la escena principal
+
             Scene scene = new Scene(root);
             primaryStage.setTitle("SGMMS - Sistema de Gestión y Monitoreo de Movilidad y Seguridad");
             primaryStage.setScene(scene);
@@ -39,7 +36,7 @@ public class Main extends Application {
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
 
-            // Configurar evento de cierre
+
             primaryStage.setOnCloseRequest(event -> {
                 if (simulador != null && simulador.isSimulacionActiva()) {
                     simulador.detenerSimulacion();
@@ -50,7 +47,7 @@ public class Main extends Application {
             // Mostrar la ventana
             primaryStage.show();
 
-            // Mensaje de bienvenida en consola
+
             System.out.println("=== Sistema SGMMS Iniciado ===");
             System.out.println("Simulador de Gestión y Monitoreo de Movilidad y Seguridad");
             System.out.println("=============================");
@@ -63,19 +60,16 @@ public class Main extends Application {
 
     @Override
     public void stop() {
-        // Detener el simulador al cerrar la aplicación
+
         if (simulador != null && simulador.isSimulacionActiva()) {
             simulador.detenerSimulacion();
         }
         System.out.println("=== Sistema SGMMS Detenido ===");
     }
 
-    /**
-     * Método principal de la aplicación
-     * @param args Argumentos de línea de comandos
-     */
+
     public static void main(String[] args) {
-        // Lanzar la aplicación JavaFX
+
         launch(args);
     }
 }

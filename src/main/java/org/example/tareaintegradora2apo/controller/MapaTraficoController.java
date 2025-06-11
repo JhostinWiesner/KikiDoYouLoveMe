@@ -24,10 +24,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-/**
- * Controlador para la vista del Mapa de Tráfico.
- * Maneja la visualización en tiempo real del mapa, vehículos, semáforos e incidentes.
- */
+
 public class MapaTraficoController implements Initializable, SimuladorSGMMS.Observer {
 
     @FXML
@@ -61,9 +58,6 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     private boolean teclaS = false;
     private boolean teclaD = false;
 
-    /**
-     * Establece el simulador y la ventana principal
-     */
     public void setSimulador(SimuladorSGMMS simulador, Stage primaryStage) {
         this.simulador = simulador;
         this.primaryStage = primaryStage;
@@ -107,9 +101,8 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         lblInstrucciones.setText("WASD: Mover cámara");
     }
 
-    /**
-     * Va al centro de monitoreo
-     */
+
+
     private void irACentroMonitoreo() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/centroMonitoreo.fxml"));
@@ -130,9 +123,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Va al panel de incidentes
-     */
+
     private void irAPanelIncidentes() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/panelIncidentes.fxml"));
@@ -153,9 +144,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Abre el manual del usuario
-     */
+
     private void abrirManual() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/manualUsuario.fxml"));
@@ -174,9 +163,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Sale de la aplicación
-     */
+
     private void salirAplicacion() {
         if (simulador != null && simulador.isSimulacionActiva()) {
             simulador.detenerSimulacion();
@@ -184,9 +171,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         System.exit(0);
     }
 
-    /**
-     * Maneja las teclas presionadas para navegación de cámara
-     */
+
     private void manejarTeclaPresionada(KeyEvent event) {
         switch (event.getCode()) {
             case W:
@@ -204,9 +189,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Maneja las teclas liberadas
-     */
+
     private void manejarTeclaLiberada(KeyEvent event) {
         switch (event.getCode()) {
             case W:
@@ -224,18 +207,15 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Actualiza la posición de la cámara basada en las teclas presionadas
-     */
+
+
     private void actualizarCamara() {
         if (teclaW) camaraY -= VELOCIDAD_CAMARA;
         if (teclaS) camaraY += VELOCIDAD_CAMARA;
         if (teclaA) camaraX -= VELOCIDAD_CAMARA;
         if (teclaD) camaraX += VELOCIDAD_CAMARA;
 
-        // Limitar la cámara dentro del mapa
-//        camaraX = Math.max(0, Math.min(camaraX, 1000 - canvasMapa.getWidth()));
-//        camaraY = Math.max(0, Math.min(camaraY, 1000 - canvasMapa.getHeight()));
+
 
 
         double maxX = 1000 * 1.6 - canvasMapa.getWidth(); // Ajustar según la escala
@@ -246,9 +226,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
 
     }
 
-    /**
-     * Inicia el bucle de renderizado
-     */
+
     private void iniciarRenderizado() {
         animationTimer = new AnimationTimer() {
             @Override
@@ -273,9 +251,8 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     }
 
 
-    /**
-     * Renderiza el fondo del mapa
-     */
+
+
     private void renderizarFondoMapa() {
         // Renderizar imagen de fondo si está disponible
         if (simulador.getMapa().getImagenMapa() != null) {
@@ -300,9 +277,8 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Renderiza los semáforos
-     */
+
+
     private void renderizarSemaforos() {
         double factorEscala = 0.6; // Sin zoom por ahora
 
@@ -349,9 +325,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
 
 
 
-    /**
-     * Renderiza los vehículos
-     */
+
     private void renderizarVehiculos() {
         double factorEscala = 0.6;
         for (Vehiculo vehiculo : simulador.getVehiculos()) {
@@ -400,9 +374,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Renderiza los incidentes
-     */
+
     private void renderizarIncidentes() {
         double factorEscala = 0.6;
         for (Incidente incidente : simulador.getIncidentesActivos()) {
@@ -452,9 +424,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-    /**
-     * Detiene el renderizado cuando se cierra la ventana
-     */
+
     public void detenerRenderizado() {
         if (animationTimer != null) {
             animationTimer.stop();
@@ -493,7 +463,7 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // No se necesita acción específica en esta vista
     }
 
-//    // Agregar método para renderizar vehículos civiles
+
 //    private void renderizarVehiculosCiviles() {
 //        if (simulador == null) return;
 //

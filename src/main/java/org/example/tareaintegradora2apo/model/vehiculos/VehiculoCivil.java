@@ -11,21 +11,14 @@ import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 
 import java.util.Random;
 
-/**
- * Clase que representa un vehículo civil en el sistema SGMMS.
- * Estos vehículos se mueven autónomamente por el mapa.
- */
+
+
 public class VehiculoCivil extends Vehiculo implements Runnable {
 
     private Image actualImage;
     private double probabilidadViolacion; // Probabilidad de violar un semáforo
     private Random random;
-    
-    /**
-     * Constructor para la clase VehiculoCivil
-     * @param id Identificador único del vehículo
-     * @param posicionInicial Posición inicial en el mapa
-     */
+
     public VehiculoCivil(String id, Point2D posicionInicial, SimuladorSGMMS simuladorSGMMS) {
         super(id, posicionInicial, 1.0 + Math.random(),simuladorSGMMS); // Velocidad aleatoria entre 1.0 y 2.0
         this.probabilidadViolacion = 0.05 + Math.random() * 0.15; // Entre 5% y 20%
@@ -33,11 +26,7 @@ public class VehiculoCivil extends Vehiculo implements Runnable {
         this.prioridad = 1.0; // Prioridad baja
     }
     
-    /**
-     * Los vehículos civiles pueden violar semáforos según su probabilidad
-     * @param semaforo Semáforo a verificar
-     * @return true si debe detenerse, false en caso contrario
-     */
+
     @Override
     public boolean debeDetenerse(Semaforo semaforo) {
         if (semaforo.isRojo()) {
@@ -55,10 +44,7 @@ public class VehiculoCivil extends Vehiculo implements Runnable {
         return false;
     }
     
-    /**
-     * Asigna una ruta aleatoria al vehículo
-     * @param grafo Grafo de navegación
-     */
+
     public void asignarRutaAleatoria(Grafo grafo) {
         // Obtener nodos aleatorios de origen y destino
         MapNodo[] nodos = grafo.getNodos().toArray(new MapNodo[0]);
@@ -78,10 +64,8 @@ public class VehiculoCivil extends Vehiculo implements Runnable {
         asignarRuta(ruta);
     }
     
-    /**
-     * Obtiene la probabilidad de violación de semáforos
-     * @return Probabilidad de violación
-     */
+
+
     public double getProbabilidadViolacion() {
         return probabilidadViolacion;
     }

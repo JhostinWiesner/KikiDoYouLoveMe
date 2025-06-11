@@ -4,38 +4,24 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Implementación genérica de un Árbol Binario de Búsqueda (BST).
- * @param <T> Tipo de datos que almacenará el árbol
- */
+
 public class BST<T> {
 
     private Node<T> root;
     private Comparator<T> comparator;
 
-    /**
-     * Constructor para la clase BST
-     * @param comparator Comparador para ordenar los elementos
-     */
+
     public BST(Comparator<T> comparator) {
         this.root = null;
         this.comparator = comparator;
     }
 
-    /**
-     * Inserta un elemento en el árbol
-     * @param data Elemento a insertar
-     */
+
     public void insert(T data) {
         root = insertRec(root, data);
     }
 
-    /**
-     * Método recursivo para insertar un elemento
-     * @param root Nodo raíz actual
-     * @param data Elemento a insertar
-     * @return Nuevo nodo raíz
-     */
+
     private Node<T> insertRec(Node<T> root, T data) {
         if (root == null) {
             return new Node<>(data);
@@ -52,21 +38,12 @@ public class BST<T> {
         return root;
     }
 
-    /**
-     * Busca un elemento en el árbol
-     * @param data Elemento a buscar
-     * @return true si el elemento existe, false en caso contrario
-     */
+
     public boolean search(T data) {
         return searchRec(root, data);
     }
 
-    /**
-     * Método recursivo para buscar un elemento
-     * @param root Nodo raíz actual
-     * @param data Elemento a buscar
-     * @return true si el elemento existe, false en caso contrario
-     */
+
     private boolean searchRec(Node<T> root, T data) {
         if (root == null) {
             return false;
@@ -83,20 +60,11 @@ public class BST<T> {
         }
     }
 
-    /**
-     * Elimina un elemento del árbol
-     * @param data Elemento a eliminar
-     */
     public void delete(T data) {
         root = deleteRec(root, data);
     }
 
-    /**
-     * Método recursivo para eliminar un elemento
-     * @param root Nodo raíz actual
-     * @param data Elemento a eliminar
-     * @return Nuevo nodo raíz
-     */
+
     private Node<T> deleteRec(Node<T> root, T data) {
         if (root == null) {
             return null;
@@ -126,11 +94,7 @@ public class BST<T> {
         return root;
     }
 
-    /**
-     * Encuentra el valor mínimo en un subárbol
-     * @param root Raíz del subárbol
-     * @return Valor mínimo
-     */
+
     private T minValue(Node<T> root) {
         T minValue = root.getData();
         while (root.getLeft() != null) {
@@ -140,21 +104,14 @@ public class BST<T> {
         return minValue;
     }
 
-    /**
-     * Obtiene todos los elementos del árbol en orden
-     * @return Lista de elementos ordenados
-     */
+
     public List<T> inOrderTraversal() {
         List<T> result = new ArrayList<>();
         inOrderTraversalRec(root, result);
         return result;
     }
 
-    /**
-     * Método recursivo para recorrer el árbol en orden
-     * @param root Nodo raíz actual
-     * @param result Lista donde se almacenan los resultados
-     */
+
     private void inOrderTraversalRec(Node<T> root, List<T> result) {
         if (root != null) {
             inOrderTraversalRec(root.getLeft(), result);
@@ -163,18 +120,12 @@ public class BST<T> {
         }
     }
 
-    /**
-     * Verifica si el árbol está vacío
-     * @return true si está vacío, false en caso contrario
-     */
+
     public boolean isEmpty() {
         return root == null;
     }
 
-    /**
-     * Obtiene el elemento con mayor prioridad según el comparador
-     * @return Elemento con mayor prioridad o null si el árbol está vacío
-     */
+
     public T getHighestPriority() {
         if (isEmpty()) {
             return null;
@@ -188,10 +139,7 @@ public class BST<T> {
         return current.getData();
     }
 
-    /**
-     * Obtiene el elemento con menor prioridad según el comparador
-     * @return Elemento con menor prioridad o null si el árbol está vacío
-     */
+
     public T getLowestPriority() {
         if (isEmpty()) {
             return null;

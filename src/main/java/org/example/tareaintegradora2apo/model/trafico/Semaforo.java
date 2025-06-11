@@ -4,10 +4,8 @@ import javafx.geometry.Point2D;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Clase que representa un semáforo en el sistema SGMMS.
- * Implementa Runnable para permitir que cada semáforo se ejecute en su propio hilo.
- */
+
+
 public class Semaforo implements Runnable {
 
     public enum Estado {
@@ -40,23 +38,11 @@ public class Semaforo implements Runnable {
     private int vehiculosRespetaron;
     private int vehiculosViolaron;
 
-    /**
-     * Constructor para la clase Semaforo
-     *
-     * @param id       Identificador único del semáforo
-     * @param posicion Posición en el mapa
-     */
+
     public Semaforo(String id, Point2D posicion) {
         this(id, posicion, Patron.NORMAL);
     }
 
-    /**
-     * Constructor para la clase Semaforo con patrón específico
-     *
-     * @param id       Identificador único del semáforo
-     * @param posicion Posición en el mapa
-     * @param patron   Patrón de cambio de luces
-     */
     public Semaforo(String id, Point2D posicion, Patron patron) {
         this.id = id;
         this.posicion = posicion;
@@ -67,9 +53,7 @@ public class Semaforo implements Runnable {
         this.patron = patron;
     }
 
-    /**
-     * Inicia el hilo del semáforo para comenzar su ciclo
-     */
+
     public void iniciar() {
         if (hiloSemaforo == null || !hiloSemaforo.isAlive()) {
             activo = true;
@@ -79,9 +63,7 @@ public class Semaforo implements Runnable {
         }
     }
 
-    /**
-     * Detiene el ciclo del semáforo
-     */
+
     public void detener() {
         activo = false;
         if (hiloSemaforo != null) {
@@ -89,9 +71,6 @@ public class Semaforo implements Runnable {
         }
     }
 
-    /**
-     * Método que se ejecuta en el hilo del semáforo
-     */
     @Override
     public void run() {
         try {
@@ -126,7 +105,7 @@ public class Semaforo implements Runnable {
                 } catch (Exception e) {
                     System.err.println("Error en semáforo " + id + ": " + e.getMessage());
                     try {
-                        Thread.sleep(1000); // Pausa antes de continuar
+                        Thread.sleep(1000); // Pausaditooo
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                         break;
@@ -137,65 +116,41 @@ public class Semaforo implements Runnable {
             System.err.println("Error fatal en semáforo " + id + ": " + e.getMessage());
         } finally {
             activo = false;
-           // System.out.println("Semáforo " + id + " detenido");
+
         }
     }
 
-    /**
-     * Registra que un vehículo respetó el semáforo
-     */
+
     public void registrarRespeto() {
         vehiculosRespetaron++;
     }
 
-    /**
-     * Registra que un vehículo violó el semáforo
-     */
+
     public void registrarViolacion() {
         vehiculosViolaron++;
     }
 
-    /**
-     * Cambia el patrón del semáforo
-     *
-     * @param patron Nuevo patrón
-     */
+
     public void cambiarPatron(Patron patron) {
         this.patron = patron;
     }
 
-    /**
-     * Verifica si el semáforo está en rojo
-     *
-     * @return true si está en rojo, false en caso contrario
-     */
+
     public boolean isRojo() {
         return estado.get() == 2;
     }
 
-    /**
-     * Verifica si el semáforo está en amarillo
-     *
-     * @return true si está en amarillo, false en caso contrario
-     */
+
     public boolean isAmarillo() {
         return estado.get() == 1;
     }
 
-    /**
-     * Verifica si el semáforo está en verde
-     *
-     * @return true si está en verde, false en caso contrario
-     */
+
     public boolean isVerde() {
         return estado.get() == 0;
     }
 
-    /**
-     * Obtiene el estado actual del semáforo
-     *
-     * @return Estado actual
-     */
+
     public Estado getEstado() {
         switch (estado.get()) {
             case 0:
@@ -209,11 +164,7 @@ public class Semaforo implements Runnable {
         }
     }
 
-    /**
-     * Obtiene el patrón actual del semáforo
-     *
-     * @return Patrón actual
-     */
+
     public Patron getPatron() {
         return patron;
     }
@@ -244,11 +195,7 @@ public class Semaforo implements Runnable {
         return vehiculosViolaron;
     }
 
-    /**
-     * Obtiene el porcentaje de respeto del semáforo
-     *
-     * @return Porcentaje de respeto (0-100)
-     */
+
     public double getPorcentajeRespeto() {
         int total = vehiculosRespetaron + vehiculosViolaron;
         if (total == 0) {

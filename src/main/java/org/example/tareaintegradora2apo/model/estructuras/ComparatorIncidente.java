@@ -4,9 +4,7 @@ import org.example.tareaintegradora2apo.model.incidentes.Incidente;
 
 import java.util.Comparator;
 
-/**
- * Comparador para ordenar incidentes por prioridad (de mayor a menor).
- */
+
 public class ComparatorIncidente implements Comparator<Incidente> {
     
     @Override

@@ -11,10 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Clase abstracta que representa un vehículo en el sistema SGMMS.
- * Implementa Runnable para permitir que cada vehículo se ejecute en su propio hilo.
- */
+
 public abstract class Vehiculo implements Runnable {
     protected String id;
     protected Point2D posicion;
@@ -29,14 +26,7 @@ public abstract class Vehiculo implements Runnable {
     protected double prioridad;
     protected SimuladorSGMMS simulador;
 
-    /**
-     * Constructor para la clase Vehiculo
-     *
-     * @param id              Identificador único del vehículo
-     * @param posicionInicial Posición inicial en el mapa
-     * @param velocidad       Velocidad base del vehículo
-     * @param simulador       Instancia del simulador para acceder a la puntuación
-     */
+
     public Vehiculo(String id, Point2D posicionInicial, double velocidad, SimuladorSGMMS simulador) {
         this.id = id;
         this.posicion = posicionInicial;
@@ -48,9 +38,7 @@ public abstract class Vehiculo implements Runnable {
         this.simulador = simulador;
     }
 
-    /**
-     * Inicia el hilo del vehículo para comenzar su movimiento autónomo
-     */
+
     public void iniciar() {
         if (hiloVehiculo == null || !hiloVehiculo.isAlive()) {
             hiloVehiculo = new Thread(this);
@@ -59,9 +47,7 @@ public abstract class Vehiculo implements Runnable {
         }
     }
 
-    /**
-     * Detiene el movimiento del vehículo
-     */
+
     public void detener() {
         enMovimiento.set(false);
         if (hiloVehiculo != null) {
@@ -69,11 +55,7 @@ public abstract class Vehiculo implements Runnable {
         }
     }
 
-    /**
-     * Asigna una ruta al vehículo
-     *
-     * @param ruta Ruta a seguir
-     */
+
     public void asignarRuta(Ruta ruta) {
         this.rutaActual = ruta;
         this.puntosRuta = ruta.getPuntos();
@@ -82,36 +64,25 @@ public abstract class Vehiculo implements Runnable {
         this.enMovimiento.set(true);
     }
 
-    /**
-     * Asigna un incidente al vehículo
-     *
-     * @param incidente Incidente a atender
-     * @param grafo     Grafo de navegación para calcular la ruta
-     */
+
+
     public void asignarIncidente(Incidente incidente, Grafo grafo) {
         if (!this.disponible){
             return;
         }
 
         this.incidenteAsignado = incidente;
-        // Calcular ruta desde posición actual hasta el incidente
+
         Ruta rutaHaciaIncidente = grafo.calcularRuta(this.posicion, incidente.getPosicion());
         asignarRuta(rutaHaciaIncidente);
 
-        // Puntaje no se debe manejar aquí, solo se asigna el incidente y se calcula la ruta
+
     }
 
-    /**
-     * Verifica si el vehículo debe detenerse en un semáforo
-     *
-     * @param semaforo Semáforo a verificar
-     * @return true si debe detenerse, false en caso contrario
-     */
+
     public abstract boolean debeDetenerse(Semaforo semaforo);
 
-    /**
-     * Método que se ejecuta en el hilo del vehículo
-     */
+
     @Override
     public void run() {
         try {
@@ -126,7 +97,7 @@ public abstract class Vehiculo implements Runnable {
                     break;
                 } catch (Exception e) {
                     System.err.println("Error en hilo de vehículo " + id + ": " + e.getMessage());
-                    // Continuar con la ejecución
+
                 }
             }
         } catch (Exception e) {
@@ -134,9 +105,7 @@ public abstract class Vehiculo implements Runnable {
         }
     }
 
-    /**
-     * Mueve el vehículo hacia el siguiente punto de la ruta
-     */
+
     protected void mover() {
         if (puntoActual >= puntosRuta.size()) {
             // Llegó al destino
@@ -146,21 +115,19 @@ public abstract class Vehiculo implements Runnable {
             return;
         }
 
-        // Mover directamente al siguiente nodo (sin interpolación)
+
         posicion = puntosRuta.get(puntoActual);
         puntoActual++;
 
-        // Simular el tiempo que tardaría en llegar al siguiente nodo
+
         try {
-            Thread.sleep((long) (500 / velocidad)); // 500 puede ser calibrado
+            Thread.sleep((long) (500 / velocidad));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
-    /**
-     * Atiende el incidente asignado
-     */
+
     protected void atenderIncidente() {
         if (incidenteAsignado != null) {
             // Simular tiempo de atención
@@ -175,7 +142,7 @@ public abstract class Vehiculo implements Runnable {
                 incidenteAsignado = null;
                 disponible = true;
 
-                // Notificamos que el vehículo está disponible ahora
+                // Notificamos que el vehículo esta disponible ahora
                 simulador.notificarVehiculoDisponible(this);
 
 

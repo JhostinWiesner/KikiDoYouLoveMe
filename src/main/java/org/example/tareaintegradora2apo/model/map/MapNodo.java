@@ -5,9 +5,7 @@ import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Clase interna que representa un nodo del grafo
- */
+
 public class MapNodo {
     private String id;
     private Point2D posicion;

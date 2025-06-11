@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-/**
- * Clase que representa el mapa de la ciudad en el sistema SGMMS.
- */
+
 public class Mapa {
 
     private Image imagenMapa;
@@ -23,11 +21,7 @@ public class Mapa {
     private Map<String, Point2D> edificiosServicio;
     private List<Point2D> nodosIncidentes;
 
-    /**
-     * Constructor para la clase Mapa
-     *
-     * @param rutaImagen Ruta de la imagen del mapa
-     */
+
     public Mapa(String rutaImagen) {
         this.imagenMapa = new Image(getClass().getResource("/images/palmira_map.jpg").toExternalForm());
         //this.imagenMapa = null;
@@ -46,9 +40,7 @@ public class Mapa {
     }
 
 
-    /**
-     * Inicializa el grafo del mapa basado en la imagen proporcionada de Palmira
-     */
+
     public void inicializarGrafoPalmira() throws IOException {
         semaforos.clear();
         puntosEntrada.clear();
@@ -132,9 +124,7 @@ public class Mapa {
         }
     }
 
-    /**
-     * Crea semáforos en intersecciones principales, evitando edificios
-     */
+
     private void crearSemaforosEnIntersecciones() {
         int contadorSemaforos = 1;
 
@@ -167,9 +157,6 @@ public class Mapa {
         return patrones[random.nextInt(patrones.length)];  // Selecciona aleatoriamente un patrón
     }
 
-    /**
-     * Verifica si una posición está en zona de edificios
-     */
     private boolean estaEnZonaEdificios(Point2D posicion) {
         // Definir áreas donde están los edificios de servicio
         // Hospital (zona comercial central)
@@ -193,9 +180,6 @@ public class Mapa {
         return false;
     }
 
-    /**
-     * Determina el patrón de semáforo según la ubicación
-     */
     private Semaforo.Patron determinarPatronSemaforo(int i, int j) {
         // Intersecciones centrales: patrón normal
         if (i >= 3 && i <= 6 && j >= 3 && j <= 6) {
@@ -215,9 +199,7 @@ public class Mapa {
         return Semaforo.Patron.NORMAL;
     }
 
-    /**
-     * Agrega semáforos en puntos estratégicos
-     */
+
     private void agregarSemaforosEstrategicos(int contadorInicial) {
         int contador = contadorInicial;
 
@@ -240,9 +222,7 @@ public class Mapa {
         }
     }
 
-    /**
-     * Define las ubicaciones de los edificios de servicio
-     */
+
     private void definirEdificiosServicio() {
         // Hospital en zona comercial central
         edificiosServicio.put("hospital", new Point2D(500, 500));
@@ -264,9 +244,7 @@ public class Mapa {
         }
     }
 
-    /**
-     * Obtiene un punto de entrada aleatorio
-     */
+
     public Point2D obtenerPuntoEntradaAleatorio() {
         if (puntosEntrada.isEmpty()) {
             return new Point2D(50, 50); // Punto por defecto
@@ -275,9 +253,7 @@ public class Mapa {
         return puntosEntrada.get(indice);
     }
 
-    /**
-     * Obtiene un punto de salida aleatorio
-     */
+
     public Point2D obtenerPuntoSalidaAleatorio() {
         if (puntosSalida.isEmpty()) {
             return new Point2D(950, 950); // Punto por defecto
@@ -286,9 +262,7 @@ public class Mapa {
         return puntosSalida.get(indice);
     }
 
-    /**
-     * Obtiene una posición aleatoria en una zona específica
-     */
+
     public Point2D obtenerPosicionEnZona(String nombreZona) {
         List<Point2D> zona = zonas.get(nombreZona);
         if (zona == null || zona.isEmpty()) {
@@ -308,22 +282,13 @@ public class Mapa {
         );
     }
 
-    /**
-     * Obtiene un punto de entrada aleatorio para generar vehículos
-     *
-     * @return Punto de entrada aleatorio
-     */
+
     public Point2D getPuntoEntradaAleatorio() {
         int indice = (int) (Math.random() * puntosEntrada.size());
         return puntosEntrada.get(indice);
     }
 
-    /**
-     * Obtiene un punto aleatorio en una zona específica
-     *
-     * @param tipoZona Tipo de zona (residencial, comercial, vias_principales)
-     * @return Punto aleatorio en la zona
-     */
+
     public Point2D getPuntoAleatorioEnZona(String tipoZona) {
         List<Point2D> zona = zonas.get(tipoZona);
         if (zona == null || zona.isEmpty()) {
@@ -334,13 +299,7 @@ public class Mapa {
         return zona.get(indice);
     }
 
-    /**
-     * Verifica si un punto está dentro de una zona específica
-     *
-     * @param punto    Punto a verificar
-     * @param tipoZona Tipo de zona
-     * @return true si el punto está en la zona, false en caso contrario
-     */
+
     public boolean puntoEnZona(Point2D punto, String tipoZona) {
         List<Point2D> zona = zonas.get(tipoZona);
         if (zona == null || zona.isEmpty()) {
@@ -357,10 +316,7 @@ public class Mapa {
         return false;
     }
 
-    /**
-     * Obtiene el mapa de edificios de servicio
-     * @return Mapa con las ubicaciones de los edificios de servicio
-     */
+
     public Map<String, Point2D> getEdificiosServicio() {
         return edificiosServicio;
     }

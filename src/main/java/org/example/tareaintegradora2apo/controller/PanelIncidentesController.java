@@ -27,10 +27,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-/**
- * Controlador para la vista del Panel de Incidentes.
- * Muestra la lista detallada de incidentes y permite su gestión.
- */
+
 public class PanelIncidentesController implements Initializable, SimuladorSGMMS.Observer {
 
     @FXML private TableView<Incidente> tablaIncidentes;
@@ -61,10 +58,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
     private ObservableList<Incidente> incidentes;
     private ObservableList<Vehiculo> vehiculos;
 
-    /**
-     * Establece el simulador
-     * @param simulador Instancia del simulador
-     */
+
     public void setSimulador(SimuladorSGMMS simulador,Stage primaryStage) {
         this.simulador = simulador;
         this.primaryStage = primaryStage;
@@ -131,9 +125,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
                 .toList());
     }
 
-    /**
-     * Abre el manual del usuario
-     */
+
     private void abrirManual() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/manualUsuario.fxml"));
@@ -152,9 +144,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         }
     }
 
-    /**
-     * Va al mapa de tráfico
-     */
+
     private void irAMapa() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/mapaTrafico.fxml"));
@@ -172,9 +162,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         }
     }
 
-    /**
-     * Va al centro de monitoreo
-     */
+
     private void irACentroMonitoreo() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/centroMonitoreo.fxml"));
@@ -193,9 +181,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
     }
 
 
-    /**
-     * Actualiza los datos mostrados en la interfaz
-     */
+
     private void actualizarDatos() {
         if (simulador == null) {
             return;
@@ -211,10 +197,6 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
             vehiculos.addAll(simulador.getVehiculos().stream()
                 .filter(Vehiculo::isDisponible)
                 .toList());
-//            //no se cual de las dos es
-//            vehiculos.addAll(simulador.getVehiculosDisponibles().stream()
-//                    .filter(Vehiculo::isDisponible)
-//                    .toList());
 
             // Actualizar estadísticas
             actualizarEstadisticas();
@@ -225,9 +207,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
 
     }
 
-    /**
-     * Actualiza las estadísticas mostradas
-     */
+
     private void actualizarEstadisticas() {
         if (simulador == null) {
             return;
@@ -242,9 +222,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         lblTiempoPromedioRespuesta.setText(simulador.getGestorPuntuacion().getTiempoPromedioRespuesta() + " seg");
     }
 
-    /**
-     * Actualiza los tiempos transcurridos en la tabla
-     */
+
     private void actualizarTiemposTranscurridos() {
         Platform.runLater(() -> {
             tablaIncidentes.refresh();
@@ -252,10 +230,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         });
     }
 
-    /**
-     * Muestra los detalles del incidente seleccionado
-     * @param incidente Incidente seleccionado
-     */
+
     private void mostrarDetallesIncidente(Incidente incidente) {
         StringBuilder detalles = new StringBuilder();
 
@@ -292,9 +267,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         areaDetalles.setText(detalles.toString());
     }
     
-    /**
-     * Asigna un vehículo al incidente seleccionado
-     */
+
     private void asignarVehiculoAIncidente() {
         Incidente incidenteSeleccionado = tablaIncidentes.getSelectionModel().getSelectedItem();
         Vehiculo vehiculoSeleccionado = listaVehiculos.getSelectionModel().getSelectedItem();
@@ -330,9 +303,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         mostrarInformacion("Éxito", "Vehículo asignado correctamente al incidente.");
     }
     
-    /**
-     * Marca el incidente seleccionado como atendido
-     */
+
     private void marcarIncidenteAtendido() {
         Incidente incidenteSeleccionado = tablaIncidentes.getSelectionModel().getSelectedItem();
 
@@ -361,13 +332,6 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
 
 
 
-//        boolean tieneVehiculoAsignado = simulador.getVehiculos().stream()
-//                .anyMatch(v -> v.getIncidenteAsignado() != null && v.getIncidenteAsignado().equals(incidenteSeleccionado));
-//
-//        if (!tieneVehiculoAsignado) {
-//            mostrarAlerta("Error", "No hay ningún vehículo asignado a este incidente.");
-//            return;
-//        }
 
 
         incidenteSeleccionado.setAtendido(true);
@@ -384,11 +348,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         mostrarInformacion("Éxito", "Incidente marcado como atendido.");
     }
 
-    /**
-     * Muestra una alerta de error
-     * @param titulo Título de la alerta
-     * @param mensaje Mensaje de la alerta
-     */
+
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(titulo);
@@ -397,11 +357,7 @@ public class PanelIncidentesController implements Initializable, SimuladorSGMMS.
         alert.showAndWait();
     }
     
-    /**
-     * Muestra una alerta de información
-     * @param titulo Título de la alerta
-     * @param mensaje Mensaje de la alerta
-     */
+
     private void mostrarInformacion(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

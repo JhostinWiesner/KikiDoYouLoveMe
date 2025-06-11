@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Controlador para la pantalla principal del sistema SGMMS.
- */
+
 public class MenuPrincipalController implements Initializable {
     
     @FXML private Button btnJugar;
@@ -24,9 +22,8 @@ public class MenuPrincipalController implements Initializable {
     private Stage primaryStage;
     private SimuladorSGMMS simulador;
     
-    /**
-     * Establece la ventana principal y el simulador
-     */
+
+
     public void setPrimaryStage(Stage primaryStage, SimuladorSGMMS simulador) {
         this.primaryStage = primaryStage;
         this.simulador = simulador;
@@ -40,9 +37,7 @@ public class MenuPrincipalController implements Initializable {
         btnSalir.setOnAction(e -> salirAplicacion());
     }
     
-    /**
-     * Inicia el juego (va directamente al mapa de tráfico)
-     */
+
     private void iniciarJuego() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/mapaTrafico.fxml"));
@@ -65,9 +60,7 @@ public class MenuPrincipalController implements Initializable {
         }
     }
     
-    /**
-     * Abre el manual del usuario
-     */
+
     private void abrirManual() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/manualUsuario.fxml"));
@@ -86,9 +79,7 @@ public class MenuPrincipalController implements Initializable {
         }
     }
     
-    /**
-     * Sale de la aplicación
-     */
+
     private void salirAplicacion() {
         if (simulador != null && simulador.isSimulacionActiva()) {
             simulador.detenerSimulacion();

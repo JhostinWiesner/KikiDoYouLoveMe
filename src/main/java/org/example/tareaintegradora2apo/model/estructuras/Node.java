@@ -1,9 +1,6 @@
 package org.example.tareaintegradora2apo.model.estructuras;
 
-/**
- * Clase interna que representa un nodo del árbol
- * @param <T> Tipo de datos que almacena el nodo
- */
+
 public class Node<T> {
     T data;
     Node<T> left;

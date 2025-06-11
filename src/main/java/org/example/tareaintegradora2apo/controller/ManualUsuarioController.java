@@ -9,10 +9,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Controlador para la vista del Manual del Usuario.
- * Muestra información detallada sobre cómo usar el sistema SGMMS.
- */
+
 public class ManualUsuarioController implements Initializable {
 
     @FXML private TextArea areaContenido;
@@ -22,9 +19,6 @@ public class ManualUsuarioController implements Initializable {
     private SimuladorSGMMS simulador;
     private Stage primaryStage;
 
-    /**
-     * Establece el simulador y la ventana principal
-     */
     public void setPrimaryStage(Stage primaryStage, SimuladorSGMMS simulador) {
         this.primaryStage = primaryStage;
         this.simulador = simulador;
@@ -37,9 +31,7 @@ public class ManualUsuarioController implements Initializable {
         mostrarSeccionInicial();
     }
 
-    /**
-     * Configura el árbol de secciones del manual
-     */
+
     private void configurarArbolSecciones() {
         TreeItem<String> raiz = new TreeItem<>("Manual del Usuario SGMMS");
         raiz.setExpanded(true);
@@ -96,9 +88,6 @@ public class ManualUsuarioController implements Initializable {
         arbolSecciones.setRoot(raiz);
     }
 
-    /**
-     * Configura los eventos de la interfaz
-     */
     private void configurarEventos() {
         // Evento de selección en el árbol
         arbolSecciones.getSelectionModel().selectedItemProperty().addListener(
@@ -112,9 +101,8 @@ public class ManualUsuarioController implements Initializable {
         btnCerrar.setOnAction(e -> cerrarVentana());
     }
 
-    /**
-     * Muestra la sección inicial del manual
-     */
+
+
     private void mostrarSeccionInicial() {
         mostrarContenidoSeccion("Manual del Usuario SGMMS");
     }
@@ -128,11 +116,7 @@ public class ManualUsuarioController implements Initializable {
         areaContenido.setText(contenido);
     }
 
-    /**
-     * Obtiene el contenido de una sección específica
-     * @param seccion Nombre de la sección
-     * @return Contenido de la sección
-     */
+
     private String obtenerContenidoSeccion(String seccion) {
         switch (seccion) {
             case "Manual del Usuario SGMMS":
@@ -424,9 +408,7 @@ public class ManualUsuarioController implements Initializable {
         }
     }
 
-    /**
-     * Cierra la ventana del manual
-     */
+
     private void cerrarVentana() {
         Stage stage = (Stage) btnCerrar.getScene().getWindow();
         stage.close();

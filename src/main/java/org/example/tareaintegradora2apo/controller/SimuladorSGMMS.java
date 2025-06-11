@@ -23,10 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
-/**
- * Clase principal del simulador SGMMS que coordina todos los componentes del sistema.
- * Implementa el patrón Observer para notificar cambios a las vistas.
- */
+
 public class SimuladorSGMMS {
 
     // Estructuras de datos principales
@@ -79,9 +76,7 @@ public class SimuladorSGMMS {
         void onVehiculoDisponible(Vehiculo vehiculo);
     }
 
-    /**
-     * Constructor para la clase SimuladorSGMMS
-     */
+
     public SimuladorSGMMS() throws IOException {
         // Inicializar estructuras de datos con sus comparadores específicos
         this.bstIncidentes = new BST<>(new ComparatorIncidente());
@@ -142,9 +137,7 @@ public class SimuladorSGMMS {
         edificiosServicio.put("estacion_bomberos", new Point2D(844, 347));
     }
 
-    /**
-     * Inicia la simulación
-     */
+
     public void iniciarSimulacion() {
         if (simulacionActiva) {
             return;
@@ -165,9 +158,7 @@ public class SimuladorSGMMS {
         notificarObservadores(obs -> obs.onEstadisticasActualizadas(obtenerEstadisticas()));
     }
 
-    /**
-     * Detiene la simulación
-     */
+
     public void detenerSimulacion() {
         if (!simulacionActiva) {
             return;
@@ -197,9 +188,7 @@ public class SimuladorSGMMS {
         gestorTrafico.detenerSemaforos();
     }
 
-    /**
-     * Genera vehículos iniciales en el mapa
-     */
+
     private void generarVehiculosIniciales() {
         // Ya no generamos vehículos de servicio aquí, solo vehículos civiles
         for (int i = 0; i < 10; i++) {
@@ -211,7 +200,7 @@ public class SimuladorSGMMS {
         }
     }
 
-    // Agregar método para generar vehículos civiles
+
     private void generarVehiculoCivil() {
         Point2D posicion = mapa.getPuntoEntradaAleatorio();
         String[] tipos = {"Sedan", "SUV", "Camión", "Motocicleta"};
@@ -235,24 +224,6 @@ public class SimuladorSGMMS {
         generarVehiculoCivil();
     }
 
-    /**
-     * Configura los generadores automáticos de incidentes y vehículos
-     */
-//    private void configurarGeneradores() {
-//        // Generador de incidentes
-//        generadorIncidentes = Executors.newScheduledThreadPool(1);
-//        generadorIncidentes.scheduleAtFixedRate(this::generarIncidenteAleatorio, 5, 10, TimeUnit.SECONDS);
-//
-//        // Generador de vehículos adicionales
-//        generadorVehiculos = Executors.newScheduledThreadPool(1);
-//        generadorVehiculos.scheduleAtFixedRate(this::generarVehiculoAleatorio, 15, 20, TimeUnit.SECONDS);
-//
-//        // Verificador de accidentes por lógica
-//        ScheduledExecutorService verificadorAccidentes = Executors.newScheduledThreadPool(1);
-//        verificadorAccidentes.scheduleAtFixedRate(this::verificarAccidentes, 2, 3, TimeUnit.SECONDS);
-//    }
-
-    // Modificar en SimuladorSGMMS - método configurarGeneradores()
     private void configurarGeneradores() {
         // Generador de incidentes
         generadorIncidentes = Executors.newScheduledThreadPool(1);
@@ -290,7 +261,7 @@ public class SimuladorSGMMS {
             Point2D posicionIncendio = mapa.getNodosIncidentes().get(random.nextInt(mapa.getNodosIncidentes().size()));
             incidente = new Incendio("I" + (++contadorIncidentes), posicionIncendio, "estructural", random.nextInt(5) + 1);
 
-            // Si no se genera ni incendio ni robo, no hacer nada
+            // Si no se genera ni incendio ni robo, no hace nada
         } else {
             return;
         }
@@ -299,14 +270,7 @@ public class SimuladorSGMMS {
         agregarIncidente(incidente);
     }
 
-    /**
-     * Genera un vehículo aleatorio adicional
-     */
 
-
-    /**
-     * Verifica y genera accidentes basados en lógica específica
-     */
     private void verificarAccidentes() {
         if (!simulacionActiva) {
             return;
@@ -322,9 +286,7 @@ public class SimuladorSGMMS {
         verificarAccidentesPorVelocidad();
     }
 
-    /**
-     * Verifica accidentes causados por violación de semáforos
-     */
+
     private void verificarAccidentesPorSemaforo() {
         Random random = new Random();
 
@@ -363,9 +325,7 @@ public class SimuladorSGMMS {
         }
     }
 
-    /**
-     * Verifica accidentes causados por congestión
-     */
+
     private void verificarAccidentesPorCongestion() {
         Random random = new Random();
         List<Point2D> posicionesVehiculos = new ArrayList<>();
@@ -376,7 +336,7 @@ public class SimuladorSGMMS {
 
         for (MapNodo nodo : mapa.getGrafo().getNodos()) {
             if (mapa.getGrafo().hayCongestión(nodo, posicionesVehiculos, 4)) {
-                if (random.nextDouble() < 0.05) { // 5% de probabilidad
+                if (random.nextDouble() < 0.05) {
                     Accidente accidente = new Accidente(
                             "AC" + (++contadorIncidentes),
                             nodo.getPosicion(),
@@ -389,9 +349,7 @@ public class SimuladorSGMMS {
         }
     }
 
-    /**
-     * Verifica accidentes causados por exceso de velocidad
-     */
+
     private void verificarAccidentesPorVelocidad() {
         Random random = new Random();
 
@@ -414,104 +372,20 @@ public class SimuladorSGMMS {
         }
     }
 
-    /**
-     * Agrega un incidente al sistema
-     *
-     * @param incidente Incidente a agregar
-     */
+
     public void agregarIncidente(Incidente incidente) {
         incidentesActivos.add(incidente);
         bstIncidentes.insert(incidente);
-//
-//        // Asignar vehículo automáticamente
-//        asignarVehiculoAIncidente(incidente);
+
 
         notificarObservadores(obs -> obs.onIncidenteCreado(incidente));
     }
 
-//    /**
-//     * Asigna el vehículo más apropiado a un incidente
-//     *
-//     * @param incidente Incidente a atender
-//     */
-//    // Modificar el método asignarVehiculoAIncidente para crear vehículos de servicio desde edificios
-//    private void asignarVehiculoAIncidente(Incidente incidente) {
-//        Vehiculo vehiculoAsignado = null;
-//        Point2D posicionInicio = null;
-//        String tipoVehiculo = "";
-//
-//        // Determinar qué tipo de vehículo necesitamos según el incidente
-//        if (incidente instanceof Accidente) {
-//            // Los accidentes pueden ser atendidos por ambulancias o patrullas
-//            // Elegir aleatoriamente entre ambulancia y patrulla
-//            if (Math.random() < 0.5) {
-//                posicionInicio = edificiosServicio.get("hospital");
-//                tipoVehiculo = "ambulancia";
-//            } else {
-//                posicionInicio = edificiosServicio.get("estacion_policia");
-//                tipoVehiculo = "patrulla";
-//            }
-//        } else if (incidente instanceof Robo) {
-//            // Los robos son atendidos por patrullas
-//            posicionInicio = edificiosServicio.get("estacion_policia");
-//            tipoVehiculo = "patrulla";
-//        } else if (incidente instanceof Incendio) {
-//            // Los incendios son atendidos por bomberos
-//            posicionInicio = edificiosServicio.get("estacion_bomberos");
-//            tipoVehiculo = "bombero";
-//        }
-//
-//        // Si no se pudo determinar el tipo de vehículo o no hay edificio, salir
-//        if (posicionInicio == null) {
-//            return;
-//        }
-//
-//        // Crear el vehículo según el tipo
-//        switch (tipoVehiculo) {
-//            case "ambulancia":
-//                vehiculoAsignado = new Ambulancia("A" + (++contadorVehiculos), posicionInicio,this);
-//                ((Ambulancia) vehiculoAsignado).activarEmergencia();
-//                break;
-//            case "patrulla":
-//                vehiculoAsignado = new Patrulla("P" + (++contadorVehiculos), posicionInicio,this);
-//                break;
-//            case "bombero":
-//                vehiculoAsignado = new Bombero("B" + (++contadorVehiculos), posicionInicio,this);
-//                ((Bombero) vehiculoAsignado).activarEmergencia();
-//                break;
-//        }
-//
-//        // Si se creó el vehículo, asignarlo al incidente
-//        if (vehiculoAsignado != null) {
-//            vehiculoAsignado.setDisponible(true);
-//            vehiculos.add(vehiculoAsignado);
-//            vehiculoAsignado.iniciar();
-//            vehiculoAsignado.asignarIncidente(incidente, mapa.getGrafo());
-//
-//            // Crear variables finales para usar en la lambda
-//            final Vehiculo vehiculoFinal = vehiculoAsignado;
-//            final Incidente incidenteFinal = incidente;
-//
-//            notificarObservadores(obs -> {
-//                try {
-//                    obs.onVehiculoCreado(vehiculoFinal);
-//                    obs.onVehiculoAsignado(vehiculoFinal, incidenteFinal);
-//                } catch (Exception e) {
-//                    System.err.println("Error notificando observador: " + e.getMessage());
-//                }
-//            });
-//        }
-//    }
 
 public List<VehiculoCivil> getVehiculosCiviles() {
         return new ArrayList<>(vehiculosCiviles);
     }
-    /**
-     * Procesa incidentes atendidos y actualiza el sistema
-     */
-    /**
-     * Procesa y elimina los incidentes que han sido atendidos
-     */
+
     public void procesarIncidentesAtendidos() {
         try {
             // Crear una lista temporal de incidentes a eliminar
@@ -547,29 +421,17 @@ public List<VehiculoCivil> getVehiculosCiviles() {
         }
     }
 
-    /**
-     * Agrega un observador al sistema
-     *
-     * @param observer Observador a agregar
-     */
+
     public void agregarObservador(Observer observer) {
         observadores.add(observer);
     }
 
-    /**
-     * Remueve un observador del sistema
-     *
-     * @param observer Observador a remover
-     */
+
     public void removerObservador(Observer observer) {
         observadores.remove(observer);
     }
 
-    /**
-     * Notifica a todos los observadores
-     *
-     * @param accion Acción a ejecutar en cada observador
-     */
+
     private void notificarObservadores(java.util.function.Consumer<Observer> accion) {
         for (Observer observer : observadores) {
             try {
@@ -580,11 +442,7 @@ public List<VehiculoCivil> getVehiculosCiviles() {
         }
     }
 
-    /**
-     * Obtiene las estadísticas actuales del sistema
-     *
-     * @return Mapa con las estadísticas
-     */
+
     public Map<String, Object> obtenerEstadisticas() {
         Map<String, Object> estadisticas = new HashMap<>();
 
@@ -636,11 +494,7 @@ public List<VehiculoCivil> getVehiculosCiviles() {
         return null;
     }
 
-    /**
-     * Crea y asigna un vehículo a un incidente desde el panel de incidentes
-     *
-     * @param incidente Incidente a atender
-     */
+
     public void crearYAsignarVehiculoAIncidente(Incidente incidente) {
         // Usar el método privado existente
         //asignarVehiculoAIncidente(incidente);

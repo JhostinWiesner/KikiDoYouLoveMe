@@ -17,10 +17,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-/**
- * Controlador para la vista del Centro de Monitoreo.
- * Implementa el patrón Observer para recibir actualizaciones del simulador.
- */
+
 public class CentroMonitoreoController implements Initializable, SimuladorSGMMS.Observer {
     
     @FXML private Label lblPuntuacion;
@@ -48,11 +45,7 @@ public class CentroMonitoreoController implements Initializable, SimuladorSGMMS.
     private SimuladorSGMMS simulador;
     private Stage primaryStage;
     
-    /**
-     * Establece el simulador y la ventana principal
-     * @param simulador Instancia del simulador
-     * @param primaryStage Ventana principal
-     */
+
     public void setSimulador(SimuladorSGMMS simulador, Stage primaryStage) {
         this.simulador = simulador;
         this.primaryStage = primaryStage;
@@ -76,8 +69,6 @@ public class CentroMonitoreoController implements Initializable, SimuladorSGMMS.
     }
 
 
-
-    // Modifica el método abrirVentanaMapa() en CentroMonitoreoController.java
     private void abrirVentanaMapa() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/mapaTrafico.fxml"));
@@ -97,7 +88,7 @@ public class CentroMonitoreoController implements Initializable, SimuladorSGMMS.
         }
     }
 
-    // Modifica el método abrirVentanaIncidentes() en CentroMonitoreoController.java
+
     private void abrirVentanaIncidentes() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tareaintegradora2apo/panelIncidentes.fxml"));
@@ -117,9 +108,7 @@ public class CentroMonitoreoController implements Initializable, SimuladorSGMMS.
         }
     }
     
-    /**
-     * Actualiza la interfaz con los datos actuales
-     */
+
     private void actualizarInterfaz() {
         if (simulador == null) {
             return;

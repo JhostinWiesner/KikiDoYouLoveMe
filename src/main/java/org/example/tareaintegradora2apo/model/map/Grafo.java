@@ -33,14 +33,7 @@ public class Grafo {
         return nodo;
     }
 
-    /**
-     * Agrega una arista al grafo
-     * @param id Identificador único de la arista
-     * @param idOrigen ID del nodo origen
-     * @param idDestino ID del nodo destino
-     * @param peso Peso de la arista (distancia o tiempo)
-     * @return Arista creada
-     */
+
     public MapArista agregarArista(String id, String idOrigen, String idDestino, double peso) {
         MapNodo origen = nodos.get(idOrigen);
         MapNodo destino = nodos.get(idDestino);
@@ -58,36 +51,22 @@ public class Grafo {
         return arista;
     }
 
-    /**
-     * Obtiene un nodo por su ID
-     * @param id ID del nodo
-     * @return Nodo o null si no existe
-     */
+
     public MapNodo getNodo(String id) {
         return nodos.get(id);
     }
 
-    /**
-     * Obtiene todos los nodos del grafo
-     * @return Colección de nodos
-     */
+
     public Collection<MapNodo> getNodos() {
         return nodos.values();
     }
 
-    /**
-     * Obtiene todas las aristas del grafo
-     * @return Lista de aristas
-     */
+
     public List<MapArista> getAristas() {
         return aristas;
     }
 
-    /**
-     * Encuentra el nodo más cercano a una posición dada
-     * @param posicion Posición en el mapa
-     * @return Nodo más cercano
-     */
+
     public MapNodo getNodoMasCercano(Point2D posicion) {
         MapNodo nodoMasCercano = null;
         double distanciaMinima = Double.MAX_VALUE;
@@ -103,12 +82,7 @@ public class Grafo {
         return nodoMasCercano;
     }
 
-    /**
-     * Calcula la ruta más corta entre dos posiciones usando el algoritmo de Dijkstra
-     * @param inicio Posición de inicio
-     * @param fin Posición de destino
-     * @return Ruta calculada
-     */
+
     public Ruta calcularRuta(Point2D inicio, Point2D fin) {
         // Encontrar los nodos más cercanos a las posiciones de inicio y fin
         MapNodo nodoInicio = getNodoMasCercano(inicio);
@@ -173,13 +147,7 @@ public class Grafo {
         return new Ruta("ruta_" + System.currentTimeMillis(), puntos, this);
     }
 
-    /**
-     * Verifica si hay congestión en un nodo (más de N vehículos en la misma área)
-     * @param nodo Nodo a verificar
-     * @param vehiculos Lista de vehículos en el mapa
-     * @param umbral Umbral de congestión
-     * @return true si hay congestión, false en caso contrario
-     */
+
     public boolean hayCongestión(MapNodo nodo, List<Point2D> vehiculos, int umbral) {
         int contador = 0;
         double radioCongestión = 20.0; // Radio en píxeles

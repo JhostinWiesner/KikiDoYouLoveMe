@@ -1,9 +1,6 @@
 package org.example.tareaintegradora2apo.model.map;
 
-/**
- * Clase interna que representa una arista del grafo
- */
-public class MapArista {
+class MapArista {
     private String id;
     private MapNodo origen;
     private MapNodo destino;
