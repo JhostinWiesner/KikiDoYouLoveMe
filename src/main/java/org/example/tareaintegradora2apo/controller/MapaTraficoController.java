@@ -304,9 +304,16 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
      * Renderiza los semáforos
      */
     private void renderizarSemaforos() {
+        double factorEscala = 0.6; // Sin zoom por ahora
+
         for (Semaforo semaforo : simulador.getMapa().getSemaforos()) {
             double x = semaforo.getPosicion().getX();
             double y = semaforo.getPosicion().getY();
+
+
+            // Aplicar el factor de escala a las coordenadas de los semáforos
+            x *= factorEscala;
+            y *= factorEscala;
 
             // Fondo del semáforo
             gc.setFill(Color.BLACK);
@@ -339,13 +346,20 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
+
+
+
     /**
      * Renderiza los vehículos
      */
     private void renderizarVehiculos() {
+        double factorEscala = 0.6;
         for (Vehiculo vehiculo : simulador.getVehiculos()) {
             double x = vehiculo.getPosicion().getX();
             double y = vehiculo.getPosicion().getY();
+
+            x *= factorEscala;
+            y *= factorEscala;
 
             // Color según tipo de vehículo
             Color color;
@@ -390,9 +404,13 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
      * Renderiza los incidentes
      */
     private void renderizarIncidentes() {
+        double factorEscala = 0.6;
         for (Incidente incidente : simulador.getIncidentesActivos()) {
             double x = incidente.getPosicion().getX();
             double y = incidente.getPosicion().getY();
+
+            x *= factorEscala;
+            y *= factorEscala;
 
             // Color y símbolo según tipo de incidente
             Color color;

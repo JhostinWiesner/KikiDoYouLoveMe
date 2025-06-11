@@ -99,7 +99,7 @@ public class Mapa {
                     nodosIncidentes.add(new Point2D(x, y));
                 }
 
-                if (tieneSemaforo) {
+                if (tieneSemaforo && !esEdificio) {
 
                     Semaforo.Patron  patron = determinarPatronSemaforoAleatorio();
                     Semaforo semaforo = new Semaforo("S" + id, new Point2D(x, y), patron);  // O el patrón que prefieras
