@@ -9,19 +9,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-
+/**
+ * Clase que representa el mapa de la ciudad en el sistema SGMMS.
+ */
 public class Mapa {
 
     private Image imagenMapa;
     private Grafo grafo;
     private List<Semaforo> semaforos;
-    private Map<String, List<Point2D>> zonas;
+    private Map<String, List<Point2D>> zonas; // Residencial, comercial, vías principales
     private List<Point2D> puntosEntrada;
     private List<Point2D> puntosSalida;
     private Map<String, Point2D> edificiosServicio;
     private List<Point2D> nodosIncidentes;
 
-
+    /**
+     * Constructor para la clase Mapa
+     *
+     * @param rutaImagen Ruta de la imagen del mapa
+     */
     public Mapa(String rutaImagen) {
         this.imagenMapa = new Image(getClass().getResource("/images/palmira_map.jpg").toExternalForm());
         //this.imagenMapa = null;
@@ -40,20 +46,15 @@ public class Mapa {
     }
 
 
-
+    /**
+     * Inicializa el grafo del mapa basado en la imagen proporcionada de Palmira
+     */
     public void inicializarGrafoPalmira() throws IOException {
         semaforos.clear();
         puntosEntrada.clear();
         puntosSalida.clear();
         cargarNodos("map/nodos.csv");
         cargarAristas("map/aristas.csv");
-        // Crear semáforos en intersecciones principales (evitando edificios)
-        //crearSemaforosEnIntersecciones();
-
-        // Definir edificios de servicio
-        definirEdificiosServicio();
-
-
     }
 
     public void cargarNodos(String pathNodos) throws IOException {
@@ -70,7 +71,7 @@ public class Mapa {
                 // Verificar que la línea tenga el número correcto de partes
                 if (partes.length < 6) {
                     System.out.println("Advertencia: Línea con datos incompletos: " + linea);
-                    continue;
+                    continue; // Si la línea está incompleta, la saltamos
                 }
 
 
@@ -84,7 +85,7 @@ public class Mapa {
                     puntosEntrada.add(new Point2D(x, y));
                     puntosSalida.add(new Point2D(x, y));
                 }
-                //este metodo lo que hace es coger el nodo recien añadido y si es un edificio lo añade a la lista
+                // Este método usa el nodo recien añadido y si es un edificio lo añade a la lista
                // MapNodo nodo = grafo.agregarNodo(id,new Point2D(x,y),tieneSemaforo);
                 grafo.agregarNodo(id, new Point2D(x, y), tieneSemaforo);
                 if (esEdificio){
@@ -124,7 +125,9 @@ public class Mapa {
         }
     }
 
-
+    /**
+     * Crea semáforos en intersecciones principales, evitando edificios
+     */
     private void crearSemaforosEnIntersecciones() {
         int contadorSemaforos = 1;
 
@@ -149,26 +152,32 @@ public class Mapa {
         agregarSemaforosEstrategicos(contadorSemaforos);
     }
     private Semaforo.Patron determinarPatronSemaforoAleatorio() {
+        // Obtener todos los valores del enum Patron
         Semaforo.Patron[] patrones = Semaforo.Patron.values();
 
+        // Seleccionar un valor aleatorio
         Random random = new Random();
         return patrones[random.nextInt(patrones.length)];  // Selecciona aleatoriamente un patrón
     }
 
+    /**
+     * Verifica si una posición está en zona de edificios
+     */
     private boolean estaEnZonaEdificios(Point2D posicion) {
-        // Hospital
+        // Definir áreas donde están los edificios de servicio
+        // Hospital (zona comercial central)
         if (posicion.getX() >= 400 && posicion.getX() <= 600 &&
                 posicion.getY() >= 400 && posicion.getY() <= 600) {
             return true;
         }
 
-        // Estación de policía
+        // Estación de policía (zona residencial)
         if (posicion.getX() >= 100 && posicion.getX() <= 300 &&
                 posicion.getY() >= 100 && posicion.getY() <= 300) {
             return true;
         }
 
-        // Estación de bomberos
+        // Estación de bomberos (zona industrial)
         if (posicion.getX() >= 700 && posicion.getX() <= 900 &&
                 posicion.getY() >= 700 && posicion.getY() <= 900) {
             return true;
@@ -177,15 +186,21 @@ public class Mapa {
         return false;
     }
 
+    /**
+     * Determina el patrón de semáforo según la ubicación
+     */
     private Semaforo.Patron determinarPatronSemaforo(int i, int j) {
+        // Intersecciones centrales: patrón normal
         if (i >= 3 && i <= 6 && j >= 3 && j <= 6) {
             return Semaforo.Patron.NORMAL;
         }
 
+        // Intersecciones en vías principales externas: patrón rápido
         if (i == 0 || i == 9 || j == 0 || j == 9) {
             return Semaforo.Patron.RAPIDO;
         }
 
+        // Intersecciones en zonas residenciales: patrón lento
         if ((i <= 3 && j <= 3) || (i >= 6 && j >= 6)) {
             return Semaforo.Patron.LENTO;
         }
@@ -193,10 +208,13 @@ public class Mapa {
         return Semaforo.Patron.NORMAL;
     }
 
-
+    /**
+     * Agrega semáforos en puntos estratégicos
+     */
     private void agregarSemaforosEstrategicos(int contadorInicial) {
         int contador = contadorInicial;
 
+        // Semáforos cerca de puntos de entrada/salida
         Point2D[] posicionesEstrategicas = {
                 new Point2D(150, 150),  // Cerca de entrada norte-oeste
                 new Point2D(850, 150),  // Cerca de entrada norte-este
@@ -216,25 +234,9 @@ public class Mapa {
     }
 
 
-    private void definirEdificiosServicio() {
-
-        edificiosServicio.put("hospital", new Point2D(500, 500));
-
-        edificiosServicio.put("estacion_policia", new Point2D(200, 200));
-
-        edificiosServicio.put("estacion_bomberos", new Point2D(800, 800));
-
-        edificiosServicio.put("municipalidad", new Point2D(450, 450));
-        edificiosServicio.put("centro_emergencias", new Point2D(550, 550));
-
-        System.out.println("Edificios de servicio definidos:");
-        for (Map.Entry<String, Point2D> entry : edificiosServicio.entrySet()) {
-            System.out.println("- " + entry.getKey() + ": " +
-                    String.format("(%.0f, %.0f)", entry.getValue().getX(), entry.getValue().getY()));
-        }
-    }
-
-
+    /**
+     * Obtiene un punto de entrada aleatorio
+     */
     public Point2D obtenerPuntoEntradaAleatorio() {
         if (puntosEntrada.isEmpty()) {
             return new Point2D(50, 50); // Punto por defecto
@@ -243,7 +245,9 @@ public class Mapa {
         return puntosEntrada.get(indice);
     }
 
-
+    /**
+     * Obtiene un punto de salida aleatorio
+     */
     public Point2D obtenerPuntoSalidaAleatorio() {
         if (puntosSalida.isEmpty()) {
             return new Point2D(950, 950); // Punto por defecto
@@ -252,7 +256,9 @@ public class Mapa {
         return puntosSalida.get(indice);
     }
 
-
+    /**
+     * Obtiene una posición aleatoria en una zona específica
+     */
     public Point2D obtenerPosicionEnZona(String nombreZona) {
         List<Point2D> zona = zonas.get(nombreZona);
         if (zona == null || zona.isEmpty()) {
@@ -271,13 +277,22 @@ public class Mapa {
         );
     }
 
-
+    /**
+     * Obtiene un punto de entrada aleatorio para generar vehículos
+     *
+     * @return Punto de entrada aleatorio
+     */
     public Point2D getPuntoEntradaAleatorio() {
         int indice = (int) (Math.random() * puntosEntrada.size());
         return puntosEntrada.get(indice);
     }
 
-
+    /**
+     * Obtiene un punto aleatorio en una zona específica
+     *
+     * @param tipoZona Tipo de zona (residencial, comercial, vias_principales)
+     * @return Punto aleatorio en la zona
+     */
     public Point2D getPuntoAleatorioEnZona(String tipoZona) {
         List<Point2D> zona = zonas.get(tipoZona);
         if (zona == null || zona.isEmpty()) {
@@ -288,14 +303,20 @@ public class Mapa {
         return zona.get(indice);
     }
 
-
+    /**
+     * Verifica si un punto está dentro de una zona específica
+     *
+     * @param punto    Punto a verificar
+     * @param tipoZona Tipo de zona
+     * @return true si el punto está en la zona, false en caso contrario
+     */
     public boolean puntoEnZona(Point2D punto, String tipoZona) {
         List<Point2D> zona = zonas.get(tipoZona);
         if (zona == null || zona.isEmpty()) {
             return false;
         }
 
-        //verificar si el punto está cerca de algún punto de la zona
+        // Implementación simple: verificar si el punto está cerca de algún punto de la zona
         for (Point2D p : zona) {
             if (p.distance(punto) < 50) {
                 return true;
@@ -305,9 +326,17 @@ public class Mapa {
         return false;
     }
 
+    /**
+     * Obtiene el mapa de edificios de servicio
+     * @return Mapa con las ubicaciones de los edificios de servicio
+     */
     public Map<String, Point2D> getEdificiosServicio() {
         return edificiosServicio;
     }
+
+
+
+    // Getters
 
     public Image getImagenMapa() {
         return imagenMapa;

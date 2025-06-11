@@ -322,10 +322,6 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         }
     }
 
-
-
-
-
     private void renderizarVehiculos() {
         double factorEscala = 0.6;
         for (Vehiculo vehiculo : simulador.getVehiculos()) {
@@ -375,6 +371,58 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
     }
 
 
+    private void renderizarVehiculosCiviles() {
+        if (simulador == null || simulador.getGestorVehiculosCiviles() == null) {
+            return;
+        }
+
+        double factorEscala = 0.6;
+
+        for (VehiculoCivil vehiculo : simulador.getGestorVehiculosCiviles().getVehiculosCiviles()) {
+            double x = vehiculo.getPosicion().getX() * factorEscala;
+            double y = vehiculo.getPosicion().getY() * factorEscala;
+
+            // Color y tamaño según tipo de vehículo
+            Color color = Color.LIGHTGREEN;
+            String simbolo = "C";
+            double tamaño = 10;
+
+            // Cuerpo del vehículo
+            gc.setFill(color);
+            gc.fillOval(x - tamaño/2, y - tamaño/2, tamaño, tamaño);
+
+            // Borde según estado
+            if (vehiculo.isEnMovimiento()) {
+                gc.setStroke(Color.GREEN);
+                gc.setLineWidth(1.5);
+            } else {
+                gc.setStroke(Color.GRAY);
+                gc.setLineWidth(1.0);
+            }
+            gc.strokeOval(x - tamaño/2, y - tamaño/2, tamaño, tamaño);
+
+            // Símbolo del vehículo
+            gc.setFill(Color.BLACK);
+            gc.setFont(javafx.scene.text.Font.font(8));
+            gc.fillText(simbolo, x - 3, y + 3);
+
+            // Indicador de agresividad (para debug)
+            if (vehiculo.getFactorAgresividad() > 0.5) {
+                gc.setFill(Color.RED);
+                gc.fillOval(x - 2, y - tamaño/2 - 4, 4, 4);
+            }
+
+            // Indicador de ruta larga
+            if (vehiculo.isEnRutaLarga()) {
+                gc.setFill(Color.PURPLE);
+                gc.fillOval(x + tamaño/2, y - tamaño/2, 4, 4);
+            }
+        }
+    }
+
+    /**
+     * Renderiza los incidentes
+     */
     private void renderizarIncidentes() {
         double factorEscala = 0.6;
         for (Incidente incidente : simulador.getIncidentesActivos()) {
@@ -463,66 +511,6 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // No se necesita acción específica en esta vista
     }
 
-
-//    private void renderizarVehiculosCiviles() {
-//        if (simulador == null) return;
-//
-//        for (VehiculoCivil vehiculo : simulador.getVehiculosCiviles()) {
-//            double x = vehiculo.getPosicion().getX();
-//            double y = vehiculo.getPosicion().getY();
-//
-//            // Color según tipo de vehículo
-//            Color color;
-//            String simbolo;
-//
-//            switch (vehiculo.getTipo()) {
-//                case "Sedan":
-//                    color = Color.LIGHTBLUE;
-//                    simbolo = "S";
-//                    break;
-//                case "SUV":
-//                    color = Color.LIGHTGREEN;
-//                    simbolo = "U";
-//                    break;
-//                case "Camión":
-//                    color = Color.BROWN;
-//                    simbolo = "C";
-//                    break;
-//                case "Motocicleta":
-//                    color = Color.YELLOW;
-//                    simbolo = "M";
-//                    break;
-//                default:
-//                    color = Color.GRAY;
-//                    simbolo = "V";
-//                    break;
-//            }
-//
-//            // Cuerpo del vehículo (más pequeño que los vehículos de servicio)
-//            gc.setFill(color);
-//            gc.fillOval(x - 6, y - 6, 12, 12);
-//
-//            // Borde
-//            gc.setStroke(Color.BLACK);
-//            gc.setLineWidth(1.0);
-//            gc.strokeOval(x - 6, y - 6, 12, 12);
-//
-//            // Símbolo del vehículo
-//            gc.setFill(Color.BLACK);
-//            gc.setFont(javafx.scene.text.Font.font(10));
-//            gc.fillText(simbolo, x - 3, y + 3);
-//
-//            // Indicador de movimiento
-//            if (vehiculo.isEnMovimiento()) {
-//                gc.setFill(Color.RED);
-//                gc.fillOval(x - 2, y - 10, 4, 4);
-//            }
-//        }
-//    }
-
-
-    //     * Renderiza todos los elementos del mapa
-    //     */
     private void renderizar() {
         if (simulador == null) {
             return;
@@ -534,9 +522,9 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // Aplicar transformación de cámara
         gc.save();
 
-        double escala = 1.6; // Puedes ajustar este valor para hacer el mapa más grande (0.5 es un 50% del tamaño original)
-        gc.scale(escala, escala); // Aplica el zoom
-        gc.translate(-camaraX / escala, -camaraY / escala); // Ajuste de cámara para que se mueva correctamente con el zoom
+        double escala = 1.6;
+        gc.scale(escala, escala);
+        gc.translate(-camaraX / escala, -camaraY / escala);
 
         // Renderizar fondo del mapa
         renderizarFondoMapa();
@@ -544,10 +532,13 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // Renderizar semáforos
         renderizarSemaforos();
 
-        // Renderizar vehículos
+        // Renderizar vehículos civiles PRIMERO (para que aparezcan detrás)
+        renderizarVehiculosCiviles();
+
+        // Renderizar vehículos de servicio (encima de los civiles)
         renderizarVehiculos();
 
-        // Renderizar incidentes
+        // Renderizar incidentes (encima de todo)
         renderizarIncidentes();
 
         // Restaurar transformación
