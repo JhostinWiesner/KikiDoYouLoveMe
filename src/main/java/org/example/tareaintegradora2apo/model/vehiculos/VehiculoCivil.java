@@ -2,6 +2,7 @@ package org.example.tareaintegradora2apo.model.vehiculos;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import org.example.tareaintegradora2apo.controller.SimuladorSGMMS;
 import org.example.tareaintegradora2apo.model.map.Grafo;
 import org.example.tareaintegradora2apo.model.map.MapNodo;
 import org.example.tareaintegradora2apo.model.trafico.Ruta;
@@ -25,8 +26,8 @@ public class VehiculoCivil extends Vehiculo implements Runnable {
      * @param id Identificador único del vehículo
      * @param posicionInicial Posición inicial en el mapa
      */
-    public VehiculoCivil(String id, Point2D posicionInicial) {
-        super(id, posicionInicial, 1.0 + Math.random()); // Velocidad aleatoria entre 1.0 y 2.0
+    public VehiculoCivil(String id, Point2D posicionInicial, SimuladorSGMMS simuladorSGMMS) {
+        super(id, posicionInicial, 1.0 + Math.random(),simuladorSGMMS); // Velocidad aleatoria entre 1.0 y 2.0
         this.probabilidadViolacion = 0.05 + Math.random() * 0.15; // Entre 5% y 20%
         this.random = new Random();
         this.prioridad = 1.0; // Prioridad baja

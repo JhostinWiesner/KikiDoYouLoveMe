@@ -584,5 +584,8 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         gc.restore();
     }
 
+    @Override
+    public void onVehiculoDisponible(Vehiculo vehiculo) {
 
+    }
 }

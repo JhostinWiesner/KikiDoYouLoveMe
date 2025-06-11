@@ -53,8 +53,6 @@ public class Main extends Application {
             // Mensaje de bienvenida en consola
             System.out.println("=== Sistema SGMMS Iniciado ===");
             System.out.println("Simulador de Gestión y Monitoreo de Movilidad y Seguridad");
-            System.out.println("Ciudad: Palmira");
-            System.out.println("Versión: 2.0");
             System.out.println("=============================");
 
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package org.example.tareaintegradora2apo.model.vehiculos;
 
 import javafx.geometry.Point2D;
+import org.example.tareaintegradora2apo.controller.SimuladorSGMMS;
 import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 
 /**
@@ -16,8 +17,8 @@ public class Bombero extends Vehiculo {
      * @param id Identificador único del camión de bomberos
      * @param posicionInicial Posición inicial en el mapa
      */
-    public Bombero(String id, Point2D posicionInicial) {
-        super(id, posicionInicial, 2.5); // Velocidad media-alta
+    public Bombero(String id, Point2D posicionInicial, SimuladorSGMMS simulador) {
+        super(id, posicionInicial, 2.5,simulador); // Velocidad media-alta
         this.prioridad = 2.5; // Prioridad media-alta
         this.enEmergencia = false;
     }

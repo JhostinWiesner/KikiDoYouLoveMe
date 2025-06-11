@@ -1,6 +1,7 @@
 package org.example.tareaintegradora2apo.model.vehiculos;
 
 import javafx.geometry.Point2D;
+import org.example.tareaintegradora2apo.controller.SimuladorSGMMS;
 import org.example.tareaintegradora2apo.model.map.Grafo;
 import org.example.tareaintegradora2apo.model.trafico.Ruta;
 import org.example.tareaintegradora2apo.model.incidentes.Incidente;
@@ -26,6 +27,7 @@ public abstract class Vehiculo implements Runnable {
     protected List<Point2D> puntosRuta;
     protected int puntoActual;
     protected double prioridad;
+    protected SimuladorSGMMS simulador;
 
     /**
      * Constructor para la clase Vehiculo
@@ -33,8 +35,9 @@ public abstract class Vehiculo implements Runnable {
      * @param id              Identificador único del vehículo
      * @param posicionInicial Posición inicial en el mapa
      * @param velocidad       Velocidad base del vehículo
+     * @param simulador       Instancia del simulador para acceder a la puntuación
      */
-    public Vehiculo(String id, Point2D posicionInicial, double velocidad) {
+    public Vehiculo(String id, Point2D posicionInicial, double velocidad, SimuladorSGMMS simulador) {
         this.id = id;
         this.posicion = posicionInicial;
         this.velocidad = velocidad;
@@ -42,6 +45,7 @@ public abstract class Vehiculo implements Runnable {
         this.enMovimiento = new AtomicBoolean(false);
         this.puntosRuta = new ArrayList<>();
         this.puntoActual = 0;
+        this.simulador = simulador;
     }
 
     /**
@@ -85,10 +89,16 @@ public abstract class Vehiculo implements Runnable {
      * @param grafo     Grafo de navegación para calcular la ruta
      */
     public void asignarIncidente(Incidente incidente, Grafo grafo) {
+        if (!this.disponible){
+            return;
+        }
+
         this.incidenteAsignado = incidente;
         // Calcular ruta desde posición actual hasta el incidente
         Ruta rutaHaciaIncidente = grafo.calcularRuta(this.posicion, incidente.getPosicion());
         asignarRuta(rutaHaciaIncidente);
+
+        // Puntaje no se debe manejar aquí, solo se asigna el incidente y se calcula la ruta
     }
 
     /**
@@ -133,8 +143,6 @@ public abstract class Vehiculo implements Runnable {
             if (incidenteAsignado != null) {
                 atenderIncidente();
             }
-            enMovimiento.set(false);
-            disponible = true;
             return;
         }
 
@@ -143,14 +151,12 @@ public abstract class Vehiculo implements Runnable {
         puntoActual++;
 
         // Simular el tiempo que tardaría en llegar al siguiente nodo
-        // Puedes ajustar la constante para controlar la velocidad
         try {
             Thread.sleep((long) (500 / velocidad)); // 500 puede ser calibrado
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
-
 
     /**
      * Atiende el incidente asignado
@@ -160,8 +166,16 @@ public abstract class Vehiculo implements Runnable {
             // Simular tiempo de atención
             try {
                 Thread.sleep(incidenteAsignado.getTiempoAtencion());
-                incidenteAsignado.setAtendido(true);
+                incidenteAsignado.setAtendido(true);  // Marca el incidente como atendido
+                // Liberamos el vehículo después de atender el incidente
                 incidenteAsignado = null;
+                disponible = true;
+                // Notificamos que el vehículo está disponible ahora
+                simulador.notificarVehiculoDisponible(this);
+
+                int puntos = simulador.getGestorPuntuacion().calcularPuntos(incidenteAsignado);
+                simulador.getGestorPuntuacion().agregarPuntos(puntos);
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -209,6 +223,4 @@ public abstract class Vehiculo implements Runnable {
     public boolean isEnMovimiento() {
         return enMovimiento.get();
     }
-
-
 }
