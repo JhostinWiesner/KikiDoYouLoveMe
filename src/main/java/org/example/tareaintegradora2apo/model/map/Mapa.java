@@ -7,10 +7,7 @@ import org.example.tareaintegradora2apo.model.trafico.Semaforo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Clase que representa el mapa de la ciudad en el sistema SGMMS.
@@ -61,7 +58,7 @@ public class Mapa {
         cargarNodos("map/nodos.csv");
         cargarAristas("map/aristas.csv");
         // Crear semáforos en intersecciones principales (evitando edificios)
-        crearSemaforosEnIntersecciones();
+        //crearSemaforosEnIntersecciones();
 
         // Definir edificios de servicio
         definirEdificiosServicio();
@@ -73,7 +70,20 @@ public class Mapa {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/"+pathNodos)))) {
             String linea = reader.readLine(); // Encabezado
             while ((linea = reader.readLine()) != null) {
+                linea = linea.trim();//la limpie para quitar espaciones en blanco
+
+                if (linea.isEmpty()) {
+                    continue; // Saltar líneas vacías
+                }
+
                 String[] partes = linea.split(";");
+                // Verificar que la línea tenga el número correcto de partes
+                if (partes.length < 6) {
+                    System.out.println("Advertencia: Línea con datos incompletos: " + linea);
+                    continue; // Si la línea está incompleta, la saltamos
+                }
+
+
                 String id = partes[0].trim();
                 double x = Double.parseDouble(partes[1].trim());
                 double y = Double.parseDouble(partes[2].trim());
@@ -85,15 +95,27 @@ public class Mapa {
                     puntosSalida.add(new Point2D(x, y));
                 }
                 //este metodo lo que hace es coger el nodo recien añadido y si es un edificio lo añade a la lista
+               // MapNodo nodo = grafo.agregarNodo(id,new Point2D(x,y),tieneSemaforo);
                 grafo.agregarNodo(id, new Point2D(x, y), tieneSemaforo);
                 if (esEdificio){
                     nodosIncidentes.add(new Point2D(x, y));
+                }
+
+                if (tieneSemaforo) {
+
+                    Semaforo.Patron  patron = determinarPatronSemaforoAleatorio();
+                    Semaforo semaforo = new Semaforo("S" + id, new Point2D(x, y), patron);  // O el patrón que prefieras
+                    semaforos.add(semaforo);
+                    semaforo.iniciar();
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+
+
 
     public void cargarAristas(String pathAristas) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/"+pathAristas)))) {
@@ -137,6 +159,14 @@ public class Mapa {
 
         // Agregar algunos semáforos adicionales en puntos estratégicos
         agregarSemaforosEstrategicos(contadorSemaforos);
+    }
+    private Semaforo.Patron determinarPatronSemaforoAleatorio() {
+        // Obtener todos los valores del enum Patron
+        Semaforo.Patron[] patrones = Semaforo.Patron.values();
+
+        // Seleccionar un valor aleatorio
+        Random random = new Random();
+        return patrones[random.nextInt(patrones.length)];  // Selecciona aleatoriamente un patrón
     }
 
     /**
