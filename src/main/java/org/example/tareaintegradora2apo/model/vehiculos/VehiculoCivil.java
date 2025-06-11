@@ -15,8 +15,6 @@ import java.util.Random;
  * Estos vehículos se mueven autónomamente por el mapa.
  */
 public class VehiculoCivil extends Vehiculo implements Runnable {
-
-    private Image actualImage;
     private double probabilidadViolacion; // Probabilidad de violar un semáforo
     private Random random;
     
@@ -90,7 +88,7 @@ public class VehiculoCivil extends Vehiculo implements Runnable {
         super.mover();
         
         // Si llegó al destino y está disponible, asignar nueva ruta aleatoria
-        if (!enMovimiento.get() && isDisponible() && Math.random() < 0.8) {
+        if (!enMovimiento && isDisponible() && Math.random() < 0.8) {
             // 80% de probabilidad de continuar con una nueva ruta
             asignarRutaAleatoria(rutaActual.getGrafo());
         }

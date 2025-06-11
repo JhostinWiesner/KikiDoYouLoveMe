@@ -1,6 +1,10 @@
 package org.example.tareaintegradora2apo.model.vehiculos;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import org.example.tareaintegradora2apo.model.map.Grafo;
 import org.example.tareaintegradora2apo.model.trafico.Ruta;
 import org.example.tareaintegradora2apo.model.incidentes.Incidente;
@@ -22,10 +26,15 @@ public abstract class Vehiculo implements Runnable {
     protected Ruta rutaActual;
     protected Incidente incidenteAsignado;
     protected Thread hiloVehiculo;
-    protected AtomicBoolean enMovimiento;
+    protected boolean enMovimiento;
     protected List<Point2D> puntosRuta;
     protected int puntoActual;
     protected double prioridad;
+
+    protected Image image;
+    protected GraphicsContext gc;
+    protected double ancho = 32;
+    protected double alto = 32;
 
     /**
      * Constructor para la clase Vehiculo
@@ -34,14 +43,16 @@ public abstract class Vehiculo implements Runnable {
      * @param posicionInicial Posición inicial en el mapa
      * @param velocidad       Velocidad base del vehículo
      */
-    public Vehiculo(String id, Point2D posicionInicial, double velocidad) {
+    public Vehiculo(String id, Point2D posicionInicial, double velocidad, Image imagen, GraphicsContext gc) {
         this.id = id;
         this.posicion = posicionInicial;
         this.velocidad = velocidad;
         this.disponible = true;
-        this.enMovimiento = new AtomicBoolean(false);
+        this.enMovimiento = false;
         this.puntosRuta = new ArrayList<>();
         this.puntoActual = 0;
+        this.image = imagen;
+        this.gc = gc;
     }
 
     /**
@@ -59,7 +70,7 @@ public abstract class Vehiculo implements Runnable {
      * Detiene el movimiento del vehículo
      */
     public void detener() {
-        enMovimiento.set(false);
+        enMovimiento = false;
         if (hiloVehiculo != null) {
             hiloVehiculo.interrupt();
         }
@@ -75,7 +86,7 @@ public abstract class Vehiculo implements Runnable {
         this.puntosRuta = ruta.getPuntos();
         this.puntoActual = 0;
         this.disponible = false;
-        this.enMovimiento.set(true);
+        this.enMovimiento = true;
     }
 
     /**
@@ -99,24 +110,27 @@ public abstract class Vehiculo implements Runnable {
      */
     public abstract boolean debeDetenerse(Semaforo semaforo);
 
+
+    public void dibujar() {
+        double x = posicion.getX() - ancho / 2;
+        double y = posicion.getY() - alto / 2;
+        gc.drawImage(image, x, y, ancho, alto);
+    }
     /**
      * Método que se ejecuta en el hilo del vehículo
      */
     @Override
     public void run() {
         try {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (true) {
                 try {
-                    if (enMovimiento.get() && puntosRuta.size() > 0) {
+                    if (enMovimiento && puntosRuta.size() > 0) {
                         mover();
+                        Platform.runLater(this::dibujar);
                     }
-                    Thread.sleep((long) (100 / velocidad)); // Ajustar velocidad de movimiento
+                    Thread.sleep(30); // Ajustar velocidad de movimiento
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    break;
-                } catch (Exception e) {
-                    System.err.println("Error en hilo de vehículo " + id + ": " + e.getMessage());
-                    // Continuar con la ejecución
                 }
             }
         } catch (Exception e) {
@@ -133,23 +147,34 @@ public abstract class Vehiculo implements Runnable {
             if (incidenteAsignado != null) {
                 atenderIncidente();
             }
-            enMovimiento.set(false);
+            enMovimiento = false;
             disponible = true;
             return;
         }
 
-        // Mover directamente al siguiente nodo (sin interpolación)
-        posicion = puntosRuta.get(puntoActual);
-        puntoActual++;
+        Point2D origen = posicion;
+        Point2D destino = puntosRuta.get(puntoActual);
 
-        // Simular el tiempo que tardaría en llegar al siguiente nodo
-        // Puedes ajustar la constante para controlar la velocidad
+        Point2D direccion = destino.subtract(origen).normalize();
+
+        double distancia = origen.distance(destino);
+        double paso = velocidad / 10.0;
+
+        while (posicion.distance(destino) > paso) {
+            if (Thread.currentThread().isInterrupted() || !enMovimiento) return;
+
+            posicion = posicion.add(direccion.multiply(paso));
+
+            Platform.runLater(() -> dibujar());
+        }
         try {
-            Thread.sleep((long) (500 / velocidad)); // 500 puede ser calibrado
+            Thread.sleep(30); // 500 puede ser calibrado
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
+
+
 
 
     /**
@@ -207,7 +232,7 @@ public abstract class Vehiculo implements Runnable {
     }
 
     public boolean isEnMovimiento() {
-        return enMovimiento.get();
+        return enMovimiento;
     }
 
 
