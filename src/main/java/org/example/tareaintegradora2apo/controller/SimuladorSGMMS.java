@@ -41,9 +41,11 @@ public class SimuladorSGMMS {
     private List<Incidente> incidentesActivos;
     private List<Observer> observadores;
 
+
     // Generadores de entidades
     private ScheduledExecutorService generadorIncidentes;
     private ScheduledExecutorService generadorVehiculos;
+
 
     // Estado del simulador
     private boolean simulacionActiva;
@@ -222,9 +224,37 @@ public class SimuladorSGMMS {
         verificadorAccidentes.scheduleAtFixedRate(this::verificarAccidentes, 2, 3, TimeUnit.SECONDS);
     }
 
-    /**
-     * Genera un incidente aleatorio (robo o incendio)
-     */
+//    /**
+//     * Genera un incidente aleatorio (robo o incendio)
+//     */
+//    private void generarIncidenteAleatorio() {
+//        if (!simulacionActiva) {
+//            return;
+//        }
+//
+//        Random random = new Random();
+//        Incidente incidente;
+//
+//        if (random.nextBoolean()) {
+//            // Generar robo
+//            Point2D posicion = random.nextBoolean() ?
+//                    mapa.getPuntoAleatorioEnZona("residencial") :
+//                    mapa.getPuntoAleatorioEnZona("comercial");
+//
+//            String tipoRobo = random.nextBoolean() ? "residencial" : "comercial";
+//            incidente = new Robo("R" + (++contadorIncidentes), posicion, tipoRobo);
+//        } else {
+//            // Generar incendio
+//            Point2D posicion = mapa.getPuntoAleatorioEnZona("residencial");
+//            String tipoIncendio = "estructural";
+//            int intensidad = random.nextInt(5) + 1;
+//            incidente = new Incendio("I" + (++contadorIncidentes), posicion, tipoIncendio, intensidad);
+//        }
+//
+//        agregarIncidente(incidente);
+//    }
+//
+
     private void generarIncidenteAleatorio() {
         if (!simulacionActiva) {
             return;
@@ -233,22 +263,22 @@ public class SimuladorSGMMS {
         Random random = new Random();
         Incidente incidente;
 
-        if (random.nextBoolean()) {
-            // Generar robo
-            Point2D posicion = random.nextBoolean() ?
-                    mapa.getPuntoAleatorioEnZona("residencial") :
-                    mapa.getPuntoAleatorioEnZona("comercial");
+        // Generar Robo
+        if (random.nextInt(2) == 0 && !mapa.getNodosIncidentes().isEmpty()) {
+            Point2D posicionRobo = mapa.getNodosIncidentes().get(random.nextInt(mapa.getNodosIncidentes().size()));
+            incidente = new Robo("R" + (++contadorIncidentes), posicionRobo, "robo");
 
-            String tipoRobo = random.nextBoolean() ? "residencial" : "comercial";
-            incidente = new Robo("R" + (++contadorIncidentes), posicion, tipoRobo);
+            // Generar Incendio
+        } else if (!mapa.getNodosIncidentes().isEmpty()) {
+            Point2D posicionIncendio = mapa.getNodosIncidentes().get(random.nextInt(mapa.getNodosIncidentes().size()));
+            incidente = new Incendio("I" + (++contadorIncidentes), posicionIncendio, "estructural", random.nextInt(5) + 1);
+
+            // Si no se genera ni incendio ni robo, no hacer nada
         } else {
-            // Generar incendio
-            Point2D posicion = mapa.getPuntoAleatorioEnZona("residencial");
-            String tipoIncendio = "estructural";
-            int intensidad = random.nextInt(5) + 1;
-            incidente = new Incendio("I" + (++contadorIncidentes), posicion, tipoIncendio, intensidad);
+            return;
         }
 
+        // Agregar el incidente al sistema
         agregarIncidente(incidente);
     }
 

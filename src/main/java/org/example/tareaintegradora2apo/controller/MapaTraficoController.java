@@ -475,62 +475,62 @@ public class MapaTraficoController implements Initializable, SimuladorSGMMS.Obse
         // No se necesita acción específica en esta vista
     }
 
-    // Agregar método para renderizar vehículos civiles
-    private void renderizarVehiculosCiviles() {
-        if (simulador == null) return;
-
-        for (VehiculoCivil vehiculo : simulador.getVehiculosCiviles()) {
-            double x = vehiculo.getPosicion().getX();
-            double y = vehiculo.getPosicion().getY();
-
-            // Color según tipo de vehículo
-            Color color;
-            String simbolo;
-
-            switch (vehiculo.getTipo()) {
-                case "Sedan":
-                    color = Color.LIGHTBLUE;
-                    simbolo = "S";
-                    break;
-                case "SUV":
-                    color = Color.LIGHTGREEN;
-                    simbolo = "U";
-                    break;
-                case "Camión":
-                    color = Color.BROWN;
-                    simbolo = "C";
-                    break;
-                case "Motocicleta":
-                    color = Color.YELLOW;
-                    simbolo = "M";
-                    break;
-                default:
-                    color = Color.GRAY;
-                    simbolo = "V";
-                    break;
-            }
-
-            // Cuerpo del vehículo (más pequeño que los vehículos de servicio)
-            gc.setFill(color);
-            gc.fillOval(x - 6, y - 6, 12, 12);
-
-            // Borde
-            gc.setStroke(Color.BLACK);
-            gc.setLineWidth(1.0);
-            gc.strokeOval(x - 6, y - 6, 12, 12);
-
-            // Símbolo del vehículo
-            gc.setFill(Color.BLACK);
-            gc.setFont(javafx.scene.text.Font.font(10));
-            gc.fillText(simbolo, x - 3, y + 3);
-
-            // Indicador de movimiento
-            if (vehiculo.isEnMovimiento()) {
-                gc.setFill(Color.RED);
-                gc.fillOval(x - 2, y - 10, 4, 4);
-            }
-        }
-    }
+//    // Agregar método para renderizar vehículos civiles
+//    private void renderizarVehiculosCiviles() {
+//        if (simulador == null) return;
+//
+//        for (VehiculoCivil vehiculo : simulador.getVehiculosCiviles()) {
+//            double x = vehiculo.getPosicion().getX();
+//            double y = vehiculo.getPosicion().getY();
+//
+//            // Color según tipo de vehículo
+//            Color color;
+//            String simbolo;
+//
+//            switch (vehiculo.getTipo()) {
+//                case "Sedan":
+//                    color = Color.LIGHTBLUE;
+//                    simbolo = "S";
+//                    break;
+//                case "SUV":
+//                    color = Color.LIGHTGREEN;
+//                    simbolo = "U";
+//                    break;
+//                case "Camión":
+//                    color = Color.BROWN;
+//                    simbolo = "C";
+//                    break;
+//                case "Motocicleta":
+//                    color = Color.YELLOW;
+//                    simbolo = "M";
+//                    break;
+//                default:
+//                    color = Color.GRAY;
+//                    simbolo = "V";
+//                    break;
+//            }
+//
+//            // Cuerpo del vehículo (más pequeño que los vehículos de servicio)
+//            gc.setFill(color);
+//            gc.fillOval(x - 6, y - 6, 12, 12);
+//
+//            // Borde
+//            gc.setStroke(Color.BLACK);
+//            gc.setLineWidth(1.0);
+//            gc.strokeOval(x - 6, y - 6, 12, 12);
+//
+//            // Símbolo del vehículo
+//            gc.setFill(Color.BLACK);
+//            gc.setFont(javafx.scene.text.Font.font(10));
+//            gc.fillText(simbolo, x - 3, y + 3);
+//
+//            // Indicador de movimiento
+//            if (vehiculo.isEnMovimiento()) {
+//                gc.setFill(Color.RED);
+//                gc.fillOval(x - 2, y - 10, 4, 4);
+//            }
+//        }
+//    }
 
 
     //     * Renderiza todos los elementos del mapa

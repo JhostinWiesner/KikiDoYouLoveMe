@@ -24,6 +24,7 @@ public class Mapa {
     private List<Point2D> puntosEntrada;
     private List<Point2D> puntosSalida;
     private Map<String, Point2D> edificiosServicio;
+    private List<Point2D> nodosIncidentes;
 
     /**
      * Constructor para la clase Mapa
@@ -39,6 +40,7 @@ public class Mapa {
         this.puntosEntrada = new ArrayList<>();
         this.puntosSalida = new ArrayList<>();
         this.edificiosServicio = new HashMap<>();
+        this.nodosIncidentes = new ArrayList<>();
 
         // Inicializar zonas
         zonas.put("residencial", new ArrayList<>());
@@ -77,12 +79,16 @@ public class Mapa {
                 double y = Double.parseDouble(partes[2].trim());
                 boolean tieneSemaforo = Boolean.parseBoolean(partes[3].trim());
                 boolean puntosClave = Boolean.parseBoolean(partes[4].trim());
+                boolean esEdificio = Boolean.parseBoolean(partes[5].trim());
                 if (puntosClave){
                     puntosEntrada.add(new Point2D(x, y));
                     puntosSalida.add(new Point2D(x, y));
                 }
-
+                //este metodo lo que hace es coger el nodo recien añadido y si es un edificio lo añade a la lista
                 grafo.agregarNodo(id, new Point2D(x, y), tieneSemaforo);
+                if (esEdificio){
+                    nodosIncidentes.add(new Point2D(x, y));
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -331,6 +337,8 @@ public class Mapa {
         return edificiosServicio;
     }
 
+
+
     // Getters
 
     public Image getImagenMapa() {
@@ -355,5 +363,9 @@ public class Mapa {
 
     public List<Point2D> getPuntosSalida() {
         return puntosSalida;
+    }
+
+    public List<Point2D> getNodosIncidentes() {
+        return nodosIncidentes;
     }
 }
